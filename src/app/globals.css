@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  background-color: rgb(3 7 18); /* bg-gray-950 */
+  color: rgb(243 244 246); /* text-gray-100 */
+}
