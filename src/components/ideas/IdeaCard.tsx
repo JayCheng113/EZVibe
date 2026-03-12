@@ -36,9 +36,9 @@ export default function IdeaCard({ idea, hasActiveSession }: IdeaCardProps) {
       }}
     >
       <div className="flex items-center gap-2.5">
-        <span className="text-xs leading-none">{STAGE_ICONS[idea.stage]}</span>
+        <span className="text-sm leading-none">{STAGE_ICONS[idea.stage]}</span>
         <span
-          className="flex-1 truncate text-[13px] font-medium"
+          className="flex-1 truncate text-sm font-medium"
           style={{ color: isSelected ? 'var(--text-primary)' : 'var(--text-secondary)' }}
         >
           {idea.name}
@@ -50,7 +50,7 @@ export default function IdeaCard({ idea, hasActiveSession }: IdeaCardProps) {
           </span>
         )}
         <span
-          className="shrink-0 rounded-md px-1.5 py-0.5 text-[10px] font-medium"
+          className="shrink-0 rounded-md px-1.5 py-0.5 text-xs font-medium"
           style={{
             backgroundColor: displayColor + '15',
             color: displayColor,
@@ -61,7 +61,7 @@ export default function IdeaCard({ idea, hasActiveSession }: IdeaCardProps) {
       </div>
       {idea.description && (
         <p
-          className="mt-1 truncate pl-[26px] text-[11px]"
+          className="mt-1 truncate pl-[26px] text-xs"
           style={{ color: 'var(--text-tertiary)' }}
         >
           {idea.description}

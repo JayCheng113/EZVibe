@@ -16,7 +16,7 @@ export default function IdeaList() {
         {isLoading ? (
           <div className="px-4 py-12 text-center">
             <div className="mx-auto h-5 w-5 animate-spin rounded-full border-2 border-transparent" style={{ borderTopColor: 'var(--accent)' }} />
-            <p className="mt-3 text-xs" style={{ color: 'var(--text-tertiary)' }}>Loading...</p>
+            <p className="mt-3 text-sm" style={{ color: 'var(--text-tertiary)' }}>Loading...</p>
           </div>
         ) : ideas.length === 0 ? (
           <div className="px-4 py-12 text-center">
@@ -25,8 +25,8 @@ export default function IdeaList() {
                 <path d="M10 4V16M4 10H16" stroke="var(--accent)" strokeWidth="1.5" strokeLinecap="round"/>
               </svg>
             </div>
-            <p className="text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>No ideas yet</p>
-            <p className="mt-1 text-[11px]" style={{ color: 'var(--text-tertiary)' }}>Create your first idea to get started</p>
+            <p className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>No ideas yet</p>
+            <p className="mt-1 text-xs" style={{ color: 'var(--text-tertiary)' }}>Create your first idea to get started</p>
           </div>
         ) : (
           ideas.map((idea) => <IdeaCard key={idea.id} idea={idea} />)

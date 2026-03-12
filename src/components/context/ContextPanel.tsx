@@ -38,13 +38,13 @@ export default function ContextPanel({ idea }: { idea: Idea }) {
             <button
               key={tab.key}
               onClick={() => setActiveTab(tab.key)}
-              className="relative flex items-center gap-1.5 rounded-t-md px-3 py-2 text-[12px] font-medium transition-all duration-150"
+              className="relative flex items-center gap-1.5 rounded-t-md px-3 py-2 text-sm font-medium transition-all duration-150"
               style={{
                 color: isActive ? 'var(--text-primary)' : 'var(--text-tertiary)',
                 background: isActive ? 'var(--bg-secondary)' : 'transparent',
               }}
             >
-              <span className="text-[11px]">{tab.icon}</span>
+              <span className="text-xs">{tab.icon}</span>
               {tab.label}
               {isActive && (
                 <span

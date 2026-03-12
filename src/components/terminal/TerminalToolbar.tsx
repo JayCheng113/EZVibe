@@ -55,14 +55,14 @@ export default function TerminalToolbar({
         <div className="flex items-center gap-2">
           <span className="text-sm">{STAGE_ICONS[idea.stage]}</span>
           <h2
-            className="text-[13px] font-semibold truncate max-w-[200px]"
+            className="text-sm font-semibold truncate max-w-[240px]"
             style={{ color: 'var(--text-primary)' }}
           >
             {idea.name}
           </h2>
         </div>
         <span
-          className="shrink-0 rounded-md px-1.5 py-0.5 text-[10px] font-medium"
+          className="shrink-0 rounded-md px-1.5 py-0.5 text-xs font-medium"
           style={{
             backgroundColor: displayColor + '15',
             color: displayColor,
@@ -73,7 +73,7 @@ export default function TerminalToolbar({
         <div className="flex items-center gap-1.5">
           <StatusBadge status={badgeStatus} />
           {(isAlive || sessionStatus === 'dead') && (
-            <span className="text-[10px]" style={{ color: 'var(--text-tertiary)' }}>
+            <span className="text-xs" style={{ color: 'var(--text-tertiary)' }}>
               {statusLabel[sessionStatus] || sessionStatus}
             </span>
           )}
@@ -84,7 +84,7 @@ export default function TerminalToolbar({
 
         <button
           onClick={onEditIdea}
-          className="rounded-md px-2 py-0.5 text-[11px] transition-all duration-150"
+          className="rounded-md px-2 py-1 text-xs transition-all duration-150"
           style={{ color: 'var(--text-tertiary)' }}
           onMouseEnter={e => { e.currentTarget.style.background = 'var(--bg-hover)'; e.currentTarget.style.color = 'var(--text-secondary)'; }}
           onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--text-tertiary)'; }}
@@ -94,7 +94,7 @@ export default function TerminalToolbar({
         </button>
         <button
           onClick={onDeleteIdea}
-          className="rounded-md px-2 py-0.5 text-[11px] transition-all duration-150"
+          className="rounded-md px-2 py-1 text-xs transition-all duration-150"
           style={{ color: 'var(--text-tertiary)' }}
           onMouseEnter={e => { e.currentTarget.style.background = 'var(--bg-hover)'; e.currentTarget.style.color = '#ef4444'; }}
           onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--text-tertiary)'; }}
@@ -109,7 +109,7 @@ export default function TerminalToolbar({
           !idea.projectPath ? (
             <button
               onClick={onEditIdea}
-              className="rounded-lg px-3 py-1.5 text-[11px] font-medium text-white transition-all duration-150 hover:brightness-110 active:scale-[0.97]"
+              className="rounded-lg px-3 py-1.5 text-xs font-medium text-white transition-all duration-150 hover:brightness-110 active:scale-[0.97]"
               style={{ background: '#d97706' }}
             >
               Set Project Path
@@ -117,7 +117,7 @@ export default function TerminalToolbar({
           ) : (
             <button
               onClick={onCreateSession}
-              className="rounded-lg px-3 py-1.5 text-[11px] font-medium text-white transition-all duration-150 hover:brightness-110 active:scale-[0.97]"
+              className="rounded-lg px-3 py-1.5 text-xs font-medium text-white transition-all duration-150 hover:brightness-110 active:scale-[0.97]"
               style={{ background: 'var(--accent)' }}
               title="Start Claude Code session"
             >
@@ -127,7 +127,7 @@ export default function TerminalToolbar({
         ) : (
           <button
             onClick={onKillSession}
-            className="rounded-lg px-3 py-1.5 text-[11px] font-medium transition-all duration-150 hover:brightness-110 active:scale-[0.97]"
+            className="rounded-lg px-3 py-1.5 text-xs font-medium transition-all duration-150 hover:brightness-110 active:scale-[0.97]"
             style={{
               background: 'rgba(239, 68, 68, 0.15)',
               color: '#ef4444',

@@ -13,13 +13,13 @@ export default function IdeasPage() {
           <span className="text-white font-bold">E</span>
         </div>
         <h2
-          className="text-lg font-semibold"
+          className="text-xl font-semibold"
           style={{ color: 'var(--text-primary)' }}
         >
           Welcome to EZVibe
         </h2>
         <p
-          className="mt-2 max-w-[280px] text-[13px] leading-relaxed"
+          className="mt-2 max-w-[300px] text-sm leading-relaxed"
           style={{ color: 'var(--text-tertiary)' }}
         >
           Select an idea from the sidebar to open its terminal, or create a new one to get started.
@@ -27,28 +27,28 @@ export default function IdeasPage() {
         <div className="mt-6 flex items-center justify-center gap-6">
           <div className="text-center">
             <div className="text-2xl">💬</div>
-            <p className="mt-1 text-[10px] font-medium" style={{ color: 'var(--text-tertiary)' }}>Explore</p>
+            <p className="mt-1 text-xs font-medium" style={{ color: 'var(--text-tertiary)' }}>Explore</p>
           </div>
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
             <path d="M6 4L10 8L6 12" stroke="var(--text-tertiary)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity="0.4"/>
           </svg>
           <div className="text-center">
             <div className="text-2xl">📋</div>
-            <p className="mt-1 text-[10px] font-medium" style={{ color: 'var(--text-tertiary)' }}>Plan</p>
+            <p className="mt-1 text-xs font-medium" style={{ color: 'var(--text-tertiary)' }}>Plan</p>
           </div>
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
             <path d="M6 4L10 8L6 12" stroke="var(--text-tertiary)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity="0.4"/>
           </svg>
           <div className="text-center">
             <div className="text-2xl">⚡</div>
-            <p className="mt-1 text-[10px] font-medium" style={{ color: 'var(--text-tertiary)' }}>Build</p>
+            <p className="mt-1 text-xs font-medium" style={{ color: 'var(--text-tertiary)' }}>Build</p>
           </div>
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
             <path d="M6 4L10 8L6 12" stroke="var(--text-tertiary)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity="0.4"/>
           </svg>
           <div className="text-center">
             <div className="text-2xl">✅</div>
-            <p className="mt-1 text-[10px] font-medium" style={{ color: 'var(--text-tertiary)' }}>Done</p>
+            <p className="mt-1 text-xs font-medium" style={{ color: 'var(--text-tertiary)' }}>Done</p>
           </div>
         </div>
       </div>

@@ -37,11 +37,11 @@ export default function Sidebar() {
           >
             E
           </div>
-          <span className="text-sm font-semibold tracking-tight" style={{ color: 'var(--text-primary)' }}>
+          <span className="text-base font-semibold tracking-tight" style={{ color: 'var(--text-primary)' }}>
             EZVibe
           </span>
           <span
-            className="rounded-full px-1.5 py-0.5 text-[9px] font-medium uppercase tracking-wider"
+            className="rounded-full px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wider"
             style={{
               background: 'var(--accent-subtle)',
               color: 'var(--accent)',
@@ -54,7 +54,7 @@ export default function Sidebar() {
           <ThemeToggle />
           <button
             onClick={() => setShowForm(true)}
-            className="focus-ring flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-medium text-white transition-all duration-150 hover:brightness-110 active:scale-[0.97]"
+            className="focus-ring flex items-center gap-1 rounded-lg px-3 py-1.5 text-sm font-medium text-white transition-all duration-150 hover:brightness-110 active:scale-[0.97]"
             style={{
               background: 'var(--accent)',
             }}
