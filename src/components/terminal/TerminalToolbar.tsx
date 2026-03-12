@@ -52,14 +52,19 @@ export default function TerminalToolbar({
 
       <div className="flex items-center gap-2">
         {!isActive ? (
-          <button
-            onClick={onCreateSession}
-            className="rounded bg-indigo-600 px-3 py-1 text-xs font-medium text-white transition-colors hover:bg-indigo-500 disabled:opacity-50"
-            disabled={!idea.projectPath}
-            title={!idea.projectPath ? 'Set a project path first' : 'Start Claude Code session'}
-          >
-            Start Claude Code
-          </button>
+          !idea.projectPath ? (
+            <span className="text-xs text-yellow-400">
+              Please edit this idea and set a project path first
+            </span>
+          ) : (
+            <button
+              onClick={onCreateSession}
+              className="rounded bg-indigo-600 px-3 py-1 text-xs font-medium text-white transition-colors hover:bg-indigo-500"
+              title="Start Claude Code session"
+            >
+              Start Claude Code
+            </button>
+          )
         ) : (
           <button
             onClick={onKillSession}
