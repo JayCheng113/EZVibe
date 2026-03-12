@@ -165,6 +165,14 @@ export class SessionManager {
       if (this.onSessionExit) {
         this.onSessionExit(sessionId, exitCode);
       }
+
+      // Clean up dead session from memory after 60 seconds
+      setTimeout(() => {
+        const s = this.sessions.get(sessionId);
+        if (s && s.status === 'dead') {
+          this.sessions.delete(sessionId);
+        }
+      }, 60_000);
     });
 
     // Store in DB

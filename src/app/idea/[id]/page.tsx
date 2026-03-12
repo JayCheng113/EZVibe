@@ -18,7 +18,11 @@ const TerminalView = dynamic(
   { ssr: false }
 );
 
-const fetcher = (url: string) => fetch(url).then((r) => r.json());
+const fetcher = (url: string) =>
+  fetch(url).then((r) => {
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    return r.json();
+  });
 
 export default function IdeaDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -50,25 +54,34 @@ export default function IdeaDetailPage() {
     killSession(sessionId);
   }, [sessionId, killSession]);
 
-  const handleSessionExit = useCallback(() => {
-    // Session ended - UI will update via sessionStatus
-  }, []);
-
   const handleDeleteIdea = useCallback(async () => {
     if (!id) return;
-    const confirmed = window.confirm(
-      'Remove this idea from EZVibe?\n\nThis only removes it from the management system — your project files on disk will NOT be deleted.'
-    );
-    if (!confirmed) return;
 
-    await fetch(`/api/ideas/${id}`, { method: 'DELETE' });
+    const hasActiveSession = sessionId !== null && sessionStatus !== 'dead' && sessionStatus !== 'none';
+    const message = hasActiveSession
+      ? 'This idea has an active Claude Code session. Removing it will stop the session.\n\nRemove from EZVibe? (Project files on disk will NOT be deleted.)'
+      : 'Remove this idea from EZVibe?\n\nThis only removes it from the management system — your project files on disk will NOT be deleted.';
+
+    if (!window.confirm(message)) return;
+
+    // Kill active session first to avoid orphan PTY processes
+    if (hasActiveSession && sessionId) {
+      killSession(sessionId);
+    }
+
+    const res = await fetch(`/api/ideas/${id}`, { method: 'DELETE' });
+    if (!res.ok) {
+      alert('Failed to remove idea. Please try again.');
+      return;
+    }
+
     globalMutate(
       (key: unknown) => typeof key === 'string' && key.startsWith('/api/ideas'),
       undefined,
       { revalidate: true }
     );
     router.push('/ideas');
-  }, [id, globalMutate, router]);
+  }, [id, globalMutate, router, sessionId, sessionStatus, killSession]);
 
   if (isLoading) {
     return (
@@ -97,7 +110,7 @@ export default function IdeaDetailPage() {
       {!isConnected && !isLoading && (
         <div className="border-b border-yellow-300/50 bg-yellow-100/50 dark:border-yellow-800/50 dark:bg-yellow-900/30 px-4 py-2 text-xs text-yellow-700 dark:text-yellow-300 flex items-center gap-2">
           <span className="inline-block h-2 w-2 rounded-full bg-yellow-500 animate-pulse" />
-          PTY 服务器离线 — 终端功能不可用。请确认 PTY sidecar 服务正在运行 (端口 3001)。
+          PTY server offline — terminal unavailable. Make sure PTY sidecar is running (port 3001).
         </div>
       )}
 
@@ -124,7 +137,7 @@ export default function IdeaDetailPage() {
         <TerminalView
           sessionId={sessionId}
           socket={socket}
-          onSessionExit={handleSessionExit}
+          onSessionExit={() => {}}
           onRetry={handleCreateSession}
         />
       </div>

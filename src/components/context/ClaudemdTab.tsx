@@ -12,6 +12,10 @@ export default function ClaudemdTab({ idea }: { idea: Idea }) {
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const projectPath = idea.projectPath;
+  const contentRef = useRef(content);
+  const dirtyRef = useRef(dirty);
+  contentRef.current = content;
+  dirtyRef.current = dirty;
 
   // Fetch CLAUDE.md content
   useEffect(() => {
@@ -22,7 +26,10 @@ export default function ClaudemdTab({ idea }: { idea: Idea }) {
 
     setLoading(true);
     fetch(`/api/claude/claudemd?projectPath=${encodeURIComponent(projectPath)}`)
-      .then(r => r.json())
+      .then(r => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json();
+      })
       .then(data => {
         setContent(data.content || '');
         setExists(data.exists || false);
@@ -37,15 +44,16 @@ export default function ClaudemdTab({ idea }: { idea: Idea }) {
     if (!projectPath) return;
     setSaving(true);
     try {
-      await fetch('/api/claude/claudemd', {
+      const res = await fetch('/api/claude/claudemd', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ projectPath, content: text }),
       });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
       setExists(true);
       setDirty(false);
     } catch {
-      // silently fail
+      // Keep dirty=true so user knows save failed
     } finally {
       setSaving(false);
     }
@@ -58,12 +66,20 @@ export default function ClaudemdTab({ idea }: { idea: Idea }) {
     timerRef.current = setTimeout(() => save(text), 2000);
   };
 
-  // Save on unmount if dirty
+  // Flush pending save on unmount
   useEffect(() => {
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
+      if (dirtyRef.current && projectPath) {
+        // Fire-and-forget save
+        fetch('/api/claude/claudemd', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ projectPath, content: contentRef.current }),
+        }).catch(() => {});
+      }
     };
-  }, []);
+  }, [projectPath]);
 
   if (!projectPath) {
     return <p className="p-4 text-sm text-gray-500">Set a project path to view CLAUDE.md</p>;
@@ -79,7 +95,7 @@ export default function ClaudemdTab({ idea }: { idea: Idea }) {
         <div className="flex items-center gap-2">
           <span className="text-xs font-medium text-gray-700 dark:text-gray-300">CLAUDE.md</span>
           {!exists && !dirty && (
-            <span className="text-[10px] text-gray-600">does not exist yet — start typing to create</span>
+            <span className="text-[10px] text-gray-600 dark:text-gray-500">does not exist yet — start typing to create</span>
           )}
         </div>
         <div className="flex items-center gap-2">

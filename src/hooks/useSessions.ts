@@ -12,9 +12,11 @@ export function useSessions({ socket, ideaId }: UseSessionsOptions) {
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [sessionStatus, setSessionStatus] = useState<string>('none');
   const [error, setError] = useState<string | null>(null);
-  // Track the current ideaId to avoid stale closures
+  // Track current values to avoid stale closures
   const ideaIdRef = useRef(ideaId);
   ideaIdRef.current = ideaId;
+  const sessionIdRef = useRef(sessionId);
+  sessionIdRef.current = sessionId;
 
   // On mount: find any existing active session for this idea
   useEffect(() => {
@@ -59,9 +61,10 @@ export function useSessions({ socket, ideaId }: UseSessionsOptions) {
     };
 
     const onSessionExit = ({ sessionId: sid }: { sessionId: string; code: number }) => {
-      if (sid === sessionId) {
+      if (sid === sessionIdRef.current) {
         setSessionStatus('dead');
-        setSessionId(null);
+        // Keep sessionId so TerminalView continues to show "[Session ended]"
+        // It will be cleared when user starts a new session or navigates away
       }
     };
 
@@ -99,29 +102,12 @@ export function useSessions({ socket, ideaId }: UseSessionsOptions) {
     [socket, ideaId]
   );
 
-  const attachSession = useCallback(
-    (sid: string) => {
-      if (!socket) return;
-      setSessionId(sid);
-      socket.emit('session:attach', { sessionId: sid });
-    },
-    [socket]
-  );
-
-  const detachSession = useCallback(
-    (sid: string) => {
-      if (!socket) return;
-      socket.emit('session:detach', { sessionId: sid });
-    },
-    [socket]
-  );
-
   const killSession = useCallback(
     (sid: string) => {
       if (!socket) return;
       socket.emit('session:kill', { sessionId: sid });
-      setSessionId(null);
-      setSessionStatus('none');
+      // Don't clear sessionId here — let the server's session:exit event update state
+      // so TerminalView can show "[Session ended]" before clearing
     },
     [socket]
   );
@@ -131,10 +117,6 @@ export function useSessions({ socket, ideaId }: UseSessionsOptions) {
     sessionStatus,
     error,
     createSession,
-    attachSession,
-    detachSession,
     killSession,
-    setSessionId,
-    setSessionStatus,
   };
 }

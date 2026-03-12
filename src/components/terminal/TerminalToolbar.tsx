@@ -1,7 +1,7 @@
 'use client';
 
 import type { Idea } from '@/lib/types';
-import { STAGE_LABELS, STAGE_COLORS } from '@/lib/constants';
+import { STAGE_LABELS, STAGE_COLORS, STAGE_COLORS_LIGHT } from '@/lib/constants';
 import StatusBadge from '@/components/common/StatusBadge';
 
 interface TerminalToolbarProps {
@@ -24,6 +24,9 @@ export default function TerminalToolbar({
   onDeleteIdea,
 }: TerminalToolbarProps) {
   const stageColor = STAGE_COLORS[idea.stage];
+  const stageColorLight = STAGE_COLORS_LIGHT[idea.stage];
+  const isDark = typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
+  const displayColor = isDark ? stageColor : stageColorLight;
   const isAlive = sessionId !== null && sessionStatus !== 'dead' && sessionStatus !== 'none';
   const isStarting = sessionStatus === 'starting';
 
@@ -50,8 +53,8 @@ export default function TerminalToolbar({
         <span
           className="shrink-0 rounded-full px-2 py-0.5 text-[10px] font-medium"
           style={{
-            backgroundColor: stageColor + '22',
-            color: stageColor,
+            backgroundColor: displayColor + '22',
+            color: displayColor,
           }}
         >
           {STAGE_LABELS[idea.stage]}

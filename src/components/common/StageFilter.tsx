@@ -1,6 +1,6 @@
 'use client';
 
-import { STAGES, STAGE_LABELS, STAGE_COLORS } from '@/lib/constants';
+import { STAGES, STAGE_LABELS, STAGE_COLORS, STAGE_COLORS_LIGHT } from '@/lib/constants';
 import type { Stage } from '@/lib/constants';
 
 interface StageFilterProps {
@@ -9,6 +9,8 @@ interface StageFilterProps {
 }
 
 export default function StageFilter({ activeStage, onStageChange }: StageFilterProps) {
+  const isDark = typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
+
   return (
     <div className="flex flex-wrap gap-2 px-3 py-2">
       <button
@@ -21,22 +23,24 @@ export default function StageFilter({ activeStage, onStageChange }: StageFilterP
       >
         All
       </button>
-      {STAGES.map((stage: Stage) => (
-        <button
-          key={stage}
-          onClick={() => onStageChange(stage)}
-          className="rounded-full px-3 py-1 text-xs font-medium transition-colors"
-          style={{
-            backgroundColor:
-              activeStage === stage ? STAGE_COLORS[stage] : undefined,
-            color: activeStage === stage ? '#fff' : STAGE_COLORS[stage],
-            border: `1px solid ${STAGE_COLORS[stage]}`,
-            opacity: activeStage === stage ? 1 : 0.7,
-          }}
-        >
-          {STAGE_LABELS[stage]}
-        </button>
-      ))}
+      {STAGES.map((stage: Stage) => {
+        const color = isDark ? STAGE_COLORS[stage] : STAGE_COLORS_LIGHT[stage];
+        return (
+          <button
+            key={stage}
+            onClick={() => onStageChange(stage)}
+            className="rounded-full px-3 py-1 text-xs font-medium transition-colors"
+            style={{
+              backgroundColor: activeStage === stage ? color : undefined,
+              color: activeStage === stage ? '#fff' : color,
+              border: `1px solid ${color}`,
+              opacity: activeStage === stage ? 1 : 0.7,
+            }}
+          >
+            {STAGE_LABELS[stage]}
+          </button>
+        );
+      })}
     </div>
   );
 }

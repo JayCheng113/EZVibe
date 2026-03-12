@@ -2,7 +2,7 @@
 
 import { useRouter, usePathname } from 'next/navigation';
 import type { Idea } from '@/lib/types';
-import { STAGE_LABELS, STAGE_COLORS } from '@/lib/constants';
+import { STAGE_LABELS, STAGE_COLORS, STAGE_COLORS_LIGHT } from '@/lib/constants';
 
 interface IdeaCardProps {
   idea: Idea;
@@ -14,6 +14,9 @@ export default function IdeaCard({ idea, hasActiveSession }: IdeaCardProps) {
   const pathname = usePathname();
   const isSelected = pathname === `/idea/${idea.id}`;
   const stageColor = STAGE_COLORS[idea.stage];
+  const stageColorLight = STAGE_COLORS_LIGHT[idea.stage];
+  const isDark = typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
+  const displayColor = isDark ? stageColor : stageColorLight;
 
   return (
     <button
@@ -23,7 +26,7 @@ export default function IdeaCard({ idea, hasActiveSession }: IdeaCardProps) {
           ? 'bg-gray-200 dark:bg-gray-800'
           : 'bg-transparent hover:bg-gray-200/50 dark:hover:bg-gray-800/50'
       }`}
-      style={{ borderLeftColor: stageColor }}
+      style={{ borderLeftColor: displayColor }}
     >
       <div className="flex items-center gap-2">
         {hasActiveSession && (
@@ -31,15 +34,15 @@ export default function IdeaCard({ idea, hasActiveSession }: IdeaCardProps) {
         )}
         <span
           className="text-sm font-bold truncate"
-          style={{ color: idea.color || stageColor }}
+          style={{ color: idea.color || displayColor }}
         >
           {idea.name}
         </span>
         <span
           className="shrink-0 rounded-full px-2 py-0.5 text-[10px] font-medium"
           style={{
-            backgroundColor: stageColor + '22',
-            color: stageColor,
+            backgroundColor: displayColor + '22',
+            color: displayColor,
           }}
         >
           {STAGE_LABELS[idea.stage]}

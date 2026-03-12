@@ -174,7 +174,7 @@ export default function TerminalView({ sessionId, socket, onSessionExit, onRetry
 
     const onError = ({ sessionId: sid, message }: { sessionId?: string; message: string }) => {
       if (!sid || sid === sessionId) {
-        const errorText = message || 'Claude Code 启动失败，请检查 claude 是否已安装并在 PATH 中';
+        const errorText = message || 'Failed to start Claude Code — check if claude is installed and in PATH';
         terminal.write(`\r\n\x1b[31m[Error] ${errorText}\x1b[0m\r\n`);
         setErrorMessage(errorText);
       }
@@ -252,7 +252,7 @@ export default function TerminalView({ sessionId, socket, onSessionExit, onRetry
               }}
               className="shrink-0 rounded bg-red-700 px-3 py-1 text-xs font-medium text-white hover:bg-red-600 transition-colors"
             >
-              重试
+              Retry
             </button>
           )}
         </div>

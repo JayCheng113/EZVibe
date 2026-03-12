@@ -3,7 +3,11 @@
 import useSWR from 'swr';
 import type { Idea } from '@/lib/types';
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+const fetcher = (url: string) =>
+  fetch(url).then((res) => {
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return res.json();
+  });
 
 export function useIdeas(stage?: string) {
   const url = stage ? `/api/ideas?stage=${stage}` : '/api/ideas';

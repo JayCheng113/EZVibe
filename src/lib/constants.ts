@@ -18,6 +18,14 @@ export const STAGE_COLORS: Record<Stage, string> = {
   done: '#4caf50',
 };
 
+// Darker variants for light theme readability
+export const STAGE_COLORS_LIGHT: Record<Stage, string> = {
+  exploring: '#7e57c2',
+  planning: '#c62828',
+  implementing: '#0097a7',
+  done: '#2e7d32',
+};
+
 export const STAGE_ICONS: Record<Stage, string> = {
   exploring: '💬',
   planning: '📋',

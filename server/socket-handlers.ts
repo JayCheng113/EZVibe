@@ -97,10 +97,9 @@ export function registerSocketHandlers(io: Server, sessionManager: SessionManage
       sessionManager.resizeSession(sessionId, cols, rows);
     });
 
-    // session:kill
+    // session:kill — PTY onExit callback will emit session:exit to the room
     socket.on('session:kill', ({ sessionId }: { sessionId: string }) => {
       sessionManager.killSession(sessionId);
-      io.to(`session:${sessionId}`).emit('session:exit', { sessionId, code: -1 });
     });
 
     // disconnect
