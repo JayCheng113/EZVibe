@@ -8,11 +8,19 @@ interface AppShellProps {
 
 export default function AppShell({ children }: AppShellProps) {
   return (
-    <div className="flex h-screen overflow-hidden">
-      <div className="w-[35%] min-w-[280px] max-w-[420px]">
+    <div className="relative flex h-screen overflow-hidden" style={{ background: 'var(--bg-primary)' }}>
+      {/* Sidebar */}
+      <div
+        className="relative z-10 w-[320px] min-w-[280px] max-w-[400px] shrink-0"
+        style={{
+          borderRight: '1px solid var(--border-default)',
+        }}
+      >
         <Sidebar />
       </div>
-      <main className="flex-1 overflow-y-auto bg-white dark:bg-gray-950">
+
+      {/* Main content */}
+      <main className="relative z-10 flex-1 overflow-y-auto">
         {children}
       </main>
     </div>

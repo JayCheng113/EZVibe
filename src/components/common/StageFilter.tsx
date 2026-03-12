@@ -1,6 +1,6 @@
 'use client';
 
-import { STAGES, STAGE_LABELS, STAGE_COLORS, STAGE_COLORS_LIGHT } from '@/lib/constants';
+import { STAGES, STAGE_LABELS, STAGE_COLORS, STAGE_COLORS_LIGHT, STAGE_ICONS } from '@/lib/constants';
 import type { Stage } from '@/lib/constants';
 
 interface StageFilterProps {
@@ -12,31 +12,31 @@ export default function StageFilter({ activeStage, onStageChange }: StageFilterP
   const isDark = typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
 
   return (
-    <div className="flex flex-wrap gap-2 px-3 py-2">
+    <div className="flex flex-wrap gap-1.5 px-1 py-2">
       <button
         onClick={() => onStageChange(null)}
-        className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
-          activeStage === null
-            ? 'bg-gray-300 dark:bg-gray-600 text-gray-900 dark:text-white'
-            : 'bg-gray-200 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-300 dark:hover:bg-gray-700 hover:text-gray-800 dark:hover:text-gray-200'
-        }`}
+        className="rounded-md px-2.5 py-1 text-[11px] font-medium transition-all duration-150"
+        style={{
+          background: activeStage === null ? 'var(--bg-active)' : 'transparent',
+          color: activeStage === null ? 'var(--text-primary)' : 'var(--text-tertiary)',
+        }}
       >
         All
       </button>
       {STAGES.map((stage: Stage) => {
         const color = isDark ? STAGE_COLORS[stage] : STAGE_COLORS_LIGHT[stage];
+        const isActive = activeStage === stage;
         return (
           <button
             key={stage}
             onClick={() => onStageChange(stage)}
-            className="rounded-full px-3 py-1 text-xs font-medium transition-colors"
+            className="flex items-center gap-1 rounded-md px-2.5 py-1 text-[11px] font-medium transition-all duration-150"
             style={{
-              backgroundColor: activeStage === stage ? color : undefined,
-              color: activeStage === stage ? '#fff' : color,
-              border: `1px solid ${color}`,
-              opacity: activeStage === stage ? 1 : 0.7,
+              background: isActive ? color + '20' : 'transparent',
+              color: isActive ? color : 'var(--text-tertiary)',
             }}
           >
+            <span className="text-[10px]">{STAGE_ICONS[stage]}</span>
             {STAGE_LABELS[stage]}
           </button>
         );

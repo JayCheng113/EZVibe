@@ -296,35 +296,44 @@ export default function IdeaForm({ idea, isOpen, onClose, onSaved }: IdeaFormPro
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-      <div className="w-full max-w-md rounded-lg bg-white dark:bg-gray-800 p-6 shadow-xl">
-        <h2 className="mb-4 text-lg font-bold text-gray-900 dark:text-gray-100">
+    <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }}>
+      <div
+        className="w-full max-w-md rounded-xl p-6"
+        style={{
+          background: 'var(--bg-surface)',
+          border: '1px solid var(--border-default)',
+          boxShadow: 'var(--shadow-lg)',
+        }}
+      >
+        <h2 className="mb-4 text-base font-semibold" style={{ color: 'var(--text-primary)' }}>
           {isEditing ? 'Edit Idea' : 'New Idea'}
         </h2>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div>
-            <label className="mb-1 block text-sm text-gray-700 dark:text-gray-300">Name *</label>
+            <label className="mb-1 block text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>Name *</label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full rounded border border-gray-300 bg-gray-50 dark:border-gray-600 dark:bg-gray-900 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 outline-none focus:border-indigo-500"
+              className="w-full rounded-lg px-3 py-2 text-sm outline-none transition-colors"
+              style={{ background: 'var(--bg-tertiary)', border: '1px solid var(--border-default)', color: 'var(--text-primary)' }}
               placeholder="My awesome idea"
               autoFocus
             />
           </div>
           <div>
-            <label className="mb-1 block text-sm text-gray-700 dark:text-gray-300">Description</label>
+            <label className="mb-1 block text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>Description</label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full rounded border border-gray-300 bg-gray-50 dark:border-gray-600 dark:bg-gray-900 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 outline-none focus:border-indigo-500"
+              className="w-full rounded-lg px-3 py-2 text-sm outline-none transition-colors"
+              style={{ background: 'var(--bg-tertiary)', border: '1px solid var(--border-default)', color: 'var(--text-primary)' }}
               rows={3}
               placeholder="What is this idea about?"
             />
           </div>
           <div>
-            <label className="mb-1 block text-sm text-gray-700 dark:text-gray-300">Project Path</label>
+            <label className="mb-1 block text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>Project Path</label>
             {/* Discovered projects from Claude Code */}
             {!isEditing && discoveredProjects.length > 0 && (
               <div className="mb-2">
@@ -394,14 +403,16 @@ export default function IdeaForm({ idea, isOpen, onClose, onSaved }: IdeaFormPro
             <button
               type="button"
               onClick={onClose}
-              className="rounded px-4 py-2 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+              className="rounded-lg px-4 py-2 text-sm transition-colors"
+              style={{ color: 'var(--text-tertiary)' }}
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={submitting}
-              className="rounded bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500 disabled:opacity-50"
+              className="rounded-lg px-4 py-2 text-sm font-medium text-white transition-all duration-150 hover:brightness-110 active:scale-[0.97] disabled:opacity-50"
+              style={{ background: 'var(--accent)' }}
             >
               {submitting ? 'Saving...' : isEditing ? 'Update' : 'Create'}
             </button>

@@ -9,33 +9,52 @@ import UsageTab from './UsageTab';
 
 type Tab = 'instructions' | 'memory' | 'notes' | 'usage';
 
-const TABS: { key: Tab; label: string }[] = [
-  { key: 'instructions', label: 'Instructions' },
-  { key: 'memory', label: 'Memory' },
-  { key: 'notes', label: 'Notes' },
-  { key: 'usage', label: 'Token' },
+const TABS: { key: Tab; label: string; icon: string }[] = [
+  { key: 'instructions', label: 'Instructions', icon: '📝' },
+  { key: 'memory', label: 'Memory', icon: '🧠' },
+  { key: 'notes', label: 'Notes', icon: '📒' },
+  { key: 'usage', label: 'Token', icon: '📊' },
 ];
 
 export default function ContextPanel({ idea }: { idea: Idea }) {
   const [activeTab, setActiveTab] = useState<Tab>('instructions');
 
   return (
-    <div className="flex h-full flex-col border-t border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-950">
+    <div
+      className="flex h-full flex-col"
+      style={{
+        background: 'var(--bg-primary)',
+        borderTop: '1px solid var(--border-default)',
+      }}
+    >
       {/* Tab bar */}
-      <div className="flex shrink-0 border-b border-gray-200 dark:border-gray-800">
-        {TABS.map(tab => (
-          <button
-            key={tab.key}
-            onClick={() => setActiveTab(tab.key)}
-            className={`px-4 py-2 text-sm font-medium transition-colors ${
-              activeTab === tab.key
-                ? 'border-b-2 border-indigo-500 text-indigo-600 dark:text-indigo-400'
-                : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
+      <div
+        className="flex shrink-0 gap-1 px-3 pt-2 pb-0"
+        style={{ borderBottom: '1px solid var(--border-default)' }}
+      >
+        {TABS.map(tab => {
+          const isActive = activeTab === tab.key;
+          return (
+            <button
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key)}
+              className="relative flex items-center gap-1.5 rounded-t-md px-3 py-2 text-[12px] font-medium transition-all duration-150"
+              style={{
+                color: isActive ? 'var(--text-primary)' : 'var(--text-tertiary)',
+                background: isActive ? 'var(--bg-secondary)' : 'transparent',
+              }}
+            >
+              <span className="text-[11px]">{tab.icon}</span>
+              {tab.label}
+              {isActive && (
+                <span
+                  className="absolute bottom-0 left-3 right-3 h-0.5 rounded-full"
+                  style={{ background: 'var(--accent)' }}
+                />
+              )}
+            </button>
+          );
+        })}
       </div>
 
       {/* Tab content */}

@@ -86,7 +86,7 @@ export default function IdeaDetailPage() {
   if (isLoading) {
     return (
       <div className="flex h-full items-center justify-center">
-        <p className="text-sm text-gray-500">Loading...</p>
+        <div className="h-5 w-5 animate-spin rounded-full border-2 border-transparent" style={{ borderTopColor: 'var(--accent)' }} />
       </div>
     );
   }
@@ -95,8 +95,8 @@ export default function IdeaDetailPage() {
     return (
       <div className="flex h-full items-center justify-center">
         <div className="text-center">
-          <p className="text-sm text-red-400">Idea not found.</p>
-          <Link href="/ideas" className="mt-3 inline-block text-sm text-indigo-400 hover:underline">
+          <p className="text-sm" style={{ color: '#ef4444' }}>Idea not found.</p>
+          <Link href="/ideas" className="mt-3 inline-block text-sm hover:underline" style={{ color: 'var(--accent)' }}>
             &larr; Back to ideas
           </Link>
         </div>
@@ -108,15 +108,29 @@ export default function IdeaDetailPage() {
     <div className="flex h-full flex-col">
       {/* PTY server offline banner */}
       {!isConnected && !isLoading && (
-        <div className="border-b border-yellow-300/50 bg-yellow-100/50 dark:border-yellow-800/50 dark:bg-yellow-900/30 px-4 py-2 text-xs text-yellow-700 dark:text-yellow-300 flex items-center gap-2">
-          <span className="inline-block h-2 w-2 rounded-full bg-yellow-500 animate-pulse" />
+        <div
+          className="flex items-center gap-2 px-4 py-2 text-xs"
+          style={{
+            background: 'rgba(234, 179, 8, 0.08)',
+            borderBottom: '1px solid rgba(234, 179, 8, 0.15)',
+            color: '#eab308',
+          }}
+        >
+          <span className="inline-block h-2 w-2 animate-pulse rounded-full" style={{ background: '#eab308' }} />
           PTY server offline — terminal unavailable. Make sure PTY sidecar is running (port 3001).
         </div>
       )}
 
       {/* Connection error banner */}
       {(socketError || sessionError) && (
-        <div className="border-b border-red-300/50 bg-red-100/50 dark:border-red-800/50 dark:bg-red-900/30 px-4 py-2 text-xs text-red-700 dark:text-red-300">
+        <div
+          className="px-4 py-2 text-xs"
+          style={{
+            background: 'rgba(239, 68, 68, 0.08)',
+            borderBottom: '1px solid rgba(239, 68, 68, 0.15)',
+            color: '#ef4444',
+          }}
+        >
           {socketError || sessionError}
         </div>
       )}

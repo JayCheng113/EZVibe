@@ -1,7 +1,7 @@
 'use client';
 
 import type { Idea } from '@/lib/types';
-import { STAGE_LABELS, STAGE_COLORS, STAGE_COLORS_LIGHT } from '@/lib/constants';
+import { STAGE_LABELS, STAGE_COLORS, STAGE_COLORS_LIGHT, STAGE_ICONS } from '@/lib/constants';
 import StatusBadge from '@/components/common/StatusBadge';
 
 interface TerminalToolbarProps {
@@ -28,7 +28,6 @@ export default function TerminalToolbar({
   const isDark = typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
   const displayColor = isDark ? stageColor : stageColorLight;
   const isAlive = sessionId !== null && sessionStatus !== 'dead' && sessionStatus !== 'none';
-  const isStarting = sessionStatus === 'starting';
 
   const statusLabel: Record<string, string> = {
     active: 'Active',
@@ -45,15 +44,27 @@ export default function TerminalToolbar({
       : 'none') as 'active' | 'waiting' | 'idle' | 'dead' | 'none';
 
   return (
-    <div className="flex items-center justify-between border-b border-gray-200 bg-gray-50/80 dark:border-gray-800 dark:bg-gray-900/80 px-4 py-2">
+    <div
+      className="flex items-center justify-between px-4 py-2.5"
+      style={{
+        background: 'var(--bg-secondary)',
+        borderBottom: '1px solid var(--border-default)',
+      }}
+    >
       <div className="flex items-center gap-3">
-        <h2 className="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate max-w-[200px]">
-          {idea.name}
-        </h2>
+        <div className="flex items-center gap-2">
+          <span className="text-sm">{STAGE_ICONS[idea.stage]}</span>
+          <h2
+            className="text-[13px] font-semibold truncate max-w-[200px]"
+            style={{ color: 'var(--text-primary)' }}
+          >
+            {idea.name}
+          </h2>
+        </div>
         <span
-          className="shrink-0 rounded-full px-2 py-0.5 text-[10px] font-medium"
+          className="shrink-0 rounded-md px-1.5 py-0.5 text-[10px] font-medium"
           style={{
-            backgroundColor: displayColor + '22',
+            backgroundColor: displayColor + '15',
             color: displayColor,
           }}
         >
@@ -62,21 +73,31 @@ export default function TerminalToolbar({
         <div className="flex items-center gap-1.5">
           <StatusBadge status={badgeStatus} />
           {(isAlive || sessionStatus === 'dead') && (
-            <span className="text-[10px] text-gray-500">
+            <span className="text-[10px]" style={{ color: 'var(--text-tertiary)' }}>
               {statusLabel[sessionStatus] || sessionStatus}
             </span>
           )}
         </div>
+
+        {/* Divider */}
+        <div className="h-3.5 w-px" style={{ background: 'var(--border-default)' }} />
+
         <button
           onClick={onEditIdea}
-          className="rounded px-2 py-0.5 text-[10px] text-gray-500 hover:bg-gray-200 hover:text-gray-700 dark:hover:bg-gray-800 dark:hover:text-gray-300"
+          className="rounded-md px-2 py-0.5 text-[11px] transition-all duration-150"
+          style={{ color: 'var(--text-tertiary)' }}
+          onMouseEnter={e => { e.currentTarget.style.background = 'var(--bg-hover)'; e.currentTarget.style.color = 'var(--text-secondary)'; }}
+          onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--text-tertiary)'; }}
           title="Edit idea"
         >
           Edit
         </button>
         <button
           onClick={onDeleteIdea}
-          className="rounded px-2 py-0.5 text-[10px] text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-800 hover:text-red-400"
+          className="rounded-md px-2 py-0.5 text-[11px] transition-all duration-150"
+          style={{ color: 'var(--text-tertiary)' }}
+          onMouseEnter={e => { e.currentTarget.style.background = 'var(--bg-hover)'; e.currentTarget.style.color = '#ef4444'; }}
+          onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--text-tertiary)'; }}
           title="Remove from EZVibe (files on disk are NOT deleted)"
         >
           Remove
@@ -88,14 +109,16 @@ export default function TerminalToolbar({
           !idea.projectPath ? (
             <button
               onClick={onEditIdea}
-              className="rounded bg-yellow-600 px-3 py-1 text-xs font-medium text-white transition-colors hover:bg-yellow-500"
+              className="rounded-lg px-3 py-1.5 text-[11px] font-medium text-white transition-all duration-150 hover:brightness-110 active:scale-[0.97]"
+              style={{ background: '#d97706' }}
             >
               Set Project Path
             </button>
           ) : (
             <button
               onClick={onCreateSession}
-              className="rounded bg-indigo-600 px-3 py-1 text-xs font-medium text-white transition-colors hover:bg-indigo-500"
+              className="rounded-lg px-3 py-1.5 text-[11px] font-medium text-white transition-all duration-150 hover:brightness-110 active:scale-[0.97]"
+              style={{ background: 'var(--accent)' }}
               title="Start Claude Code session"
             >
               Start Claude Code
@@ -104,7 +127,11 @@ export default function TerminalToolbar({
         ) : (
           <button
             onClick={onKillSession}
-            className="rounded bg-red-600/80 px-3 py-1 text-xs font-medium text-white transition-colors hover:bg-red-500"
+            className="rounded-lg px-3 py-1.5 text-[11px] font-medium transition-all duration-150 hover:brightness-110 active:scale-[0.97]"
+            style={{
+              background: 'rgba(239, 68, 68, 0.15)',
+              color: '#ef4444',
+            }}
           >
             Stop
           </button>
