@@ -80,9 +80,9 @@ Click the **"+ New"** button in the left sidebar.
 Fill in:
 - **Name** (required) — e.g., "My Trading Bot"
 - **Description** (optional) — What this idea is about
-- **Project Path** (optional) — Absolute path to the project directory, e.g., `/Users/you/projects/trading-bot`. This is where Claude Code will run.
+- **Project Path** (optional) — Click the folder button to browse and select a local directory (you can also create new folders). This is where Claude Code will run.
 
-> **Tip:** If you set a project path, EZVibe will automatically read that project's Claude Code memory and plans from `~/.claude/`.
+> **Tip:** If you set a project path, EZVibe will automatically read that project's Claude Code memory and CLAUDE.md from `~/.claude/`.
 
 ### Step 2: Launch Claude Code
 
@@ -108,21 +108,23 @@ Fill in:
 
 ### Step 3: Use the Context Panel
 
-Below the terminal, you'll find three tabs:
+Below the terminal, you'll find four tabs:
 
 | Tab | What it shows | Source |
 |---|---|---|
-| **Plans** | All Claude Code plans (expandable accordion) | `~/.claude/plans/*.md` |
+| **Instructions** | Edit the project's `CLAUDE.md` — instructions Claude Code reads on startup | `{project}/CLAUDE.md` |
 | **Memory** | Project-specific memory files | `~/.claude/projects/{key}/memory/` |
 | **Notes** | Your freeform notes (auto-saved on typing) | SQLite database |
+| **Token** | Global token usage stats, model breakdown, daily activity | `~/.claude/stats-cache.json` |
 
-This means you can read your implementation plan or project notes *while* interacting with Claude Code — no more switching windows.
+This means you can edit Claude Code's project instructions or review token usage *while* interacting with Claude Code — no more switching windows.
 
 ### Step 4: Manage Multiple Ideas
 
 - **Switch:** Click any idea in the sidebar — the terminal switches instantly, buffer restored
 - **Background:** Terminal sessions keep running when you switch away
-- **Stage:** Update an idea's stage (Exploring → Planning → Implementing → Done) from the detail page
+- **Edit:** Click "Edit" in the toolbar to modify name, description, project path, or stage
+- **Remove:** Click "Remove" to remove an idea from EZVibe (project files on disk are NOT deleted)
 - **Status:** Green dot = active session, Red dot = dead session, No dot = no session
 
 ### Step 5: Typical Workflow

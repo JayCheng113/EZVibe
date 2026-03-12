@@ -2,20 +2,22 @@
 
 import { useState } from 'react';
 import type { Idea } from '@/lib/types';
-import PlanTab from './PlanTab';
+import ClaudemdTab from './ClaudemdTab';
 import MemoryTab from './MemoryTab';
 import NotesTab from './NotesTab';
+import UsageTab from './UsageTab';
 
-type Tab = 'plans' | 'memory' | 'notes';
+type Tab = 'instructions' | 'memory' | 'notes' | 'usage';
 
 const TABS: { key: Tab; label: string }[] = [
-  { key: 'plans', label: '计划' },
+  { key: 'instructions', label: 'Instructions' },
   { key: 'memory', label: '记忆' },
   { key: 'notes', label: '笔记' },
+  { key: 'usage', label: 'Token' },
 ];
 
 export default function ContextPanel({ idea }: { idea: Idea }) {
-  const [activeTab, setActiveTab] = useState<Tab>('plans');
+  const [activeTab, setActiveTab] = useState<Tab>('instructions');
 
   return (
     <div className="flex h-full flex-col border-t border-gray-800 bg-gray-950">
@@ -38,9 +40,10 @@ export default function ContextPanel({ idea }: { idea: Idea }) {
 
       {/* Tab content */}
       <div className="flex-1 min-h-0 overflow-auto">
-        {activeTab === 'plans' && <PlanTab idea={idea} />}
+        {activeTab === 'instructions' && <ClaudemdTab idea={idea} />}
         {activeTab === 'memory' && <MemoryTab idea={idea} />}
         {activeTab === 'notes' && <NotesTab idea={idea} />}
+        {activeTab === 'usage' && <UsageTab />}
       </div>
     </div>
   );

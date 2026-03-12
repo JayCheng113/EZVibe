@@ -1,15 +1,16 @@
 'use client';
 
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
-import useSWR from 'swr';
-import { useParams } from 'next/navigation';
+import useSWR, { useSWRConfig } from 'swr';
+import { useParams, useRouter } from 'next/navigation';
 import type { Idea } from '@/lib/types';
 import { useSocket } from '@/hooks/useSocket';
 import { useSessions } from '@/hooks/useSessions';
 import TerminalToolbar from '@/components/terminal/TerminalToolbar';
 import ContextPanel from '@/components/context/ContextPanel';
+import IdeaForm from '@/components/ideas/IdeaForm';
 
 // TerminalView must be loaded client-only (xterm.js uses DOM APIs)
 const TerminalView = dynamic(
@@ -21,12 +22,15 @@ const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
 export default function IdeaDetailPage() {
   const { id } = useParams<{ id: string }>();
-  const { data: idea, error, isLoading } = useSWR<Idea>(
+  const router = useRouter();
+  const { mutate: globalMutate } = useSWRConfig();
+  const { data: idea, error, isLoading, mutate } = useSWR<Idea>(
     id ? `/api/ideas/${id}` : null,
     fetcher
   );
 
   const { socket, isConnected, error: socketError } = useSocket();
+  const [showEditForm, setShowEditForm] = useState(false);
 
   const {
     sessionId,
@@ -49,6 +53,22 @@ export default function IdeaDetailPage() {
   const handleSessionExit = useCallback(() => {
     // Session ended - UI will update via sessionStatus
   }, []);
+
+  const handleDeleteIdea = useCallback(async () => {
+    if (!id) return;
+    const confirmed = window.confirm(
+      'Remove this idea from EZVibe?\n\nThis only removes it from the management system — your project files on disk will NOT be deleted.'
+    );
+    if (!confirmed) return;
+
+    await fetch(`/api/ideas/${id}`, { method: 'DELETE' });
+    globalMutate(
+      (key: unknown) => typeof key === 'string' && key.startsWith('/api/ideas'),
+      undefined,
+      { revalidate: true }
+    );
+    router.push('/ideas');
+  }, [id, globalMutate, router]);
 
   if (isLoading) {
     return (
@@ -95,6 +115,8 @@ export default function IdeaDetailPage() {
         sessionStatus={sessionStatus}
         onCreateSession={handleCreateSession}
         onKillSession={handleKillSession}
+        onEditIdea={() => setShowEditForm(true)}
+        onDeleteIdea={handleDeleteIdea}
       />
 
       {/* Terminal area (~60%) */}
@@ -111,6 +133,21 @@ export default function IdeaDetailPage() {
       <div className="flex-[4] min-h-0">
         <ContextPanel idea={idea} />
       </div>
+
+      {/* Edit idea modal */}
+      <IdeaForm
+        idea={idea}
+        isOpen={showEditForm}
+        onClose={() => setShowEditForm(false)}
+        onSaved={() => {
+          mutate();
+          globalMutate(
+            (key: unknown) => typeof key === 'string' && key.startsWith('/api/ideas'),
+            undefined,
+            { revalidate: true }
+          );
+        }}
+      />
     </div>
   );
 }

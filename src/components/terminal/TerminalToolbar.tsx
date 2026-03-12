@@ -10,6 +10,8 @@ interface TerminalToolbarProps {
   sessionStatus: string;
   onCreateSession: () => void;
   onKillSession: () => void;
+  onEditIdea: () => void;
+  onDeleteIdea: () => void;
 }
 
 export default function TerminalToolbar({
@@ -18,6 +20,8 @@ export default function TerminalToolbar({
   sessionStatus,
   onCreateSession,
   onKillSession,
+  onEditIdea,
+  onDeleteIdea,
 }: TerminalToolbarProps) {
   const stageColor = STAGE_COLORS[idea.stage];
   const isActive = sessionId !== null && sessionStatus !== 'dead' && sessionStatus !== 'none';
@@ -48,14 +52,31 @@ export default function TerminalToolbar({
             </span>
           )}
         </div>
+        <button
+          onClick={onEditIdea}
+          className="rounded px-2 py-0.5 text-[10px] text-gray-500 hover:bg-gray-800 hover:text-gray-300"
+          title="Edit idea"
+        >
+          Edit
+        </button>
+        <button
+          onClick={onDeleteIdea}
+          className="rounded px-2 py-0.5 text-[10px] text-gray-500 hover:bg-gray-800 hover:text-red-400"
+          title="Remove from EZVibe (files on disk are NOT deleted)"
+        >
+          Remove
+        </button>
       </div>
 
       <div className="flex items-center gap-2">
         {!isActive ? (
           !idea.projectPath ? (
-            <span className="text-xs text-yellow-400">
-              Please edit this idea and set a project path first
-            </span>
+            <button
+              onClick={onEditIdea}
+              className="rounded bg-yellow-600 px-3 py-1 text-xs font-medium text-white transition-colors hover:bg-yellow-500"
+            >
+              Set Project Path
+            </button>
           ) : (
             <button
               onClick={onCreateSession}

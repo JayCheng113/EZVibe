@@ -21,7 +21,7 @@ interface IdeaFormProps {
   onSaved: () => void;
 }
 
-function FolderPicker({ onSelect, onCancel }: { onSelect: (path: string) => void; onCancel: () => void }) {
+function FolderPicker({ onSelect, onCancel, onPathChange }: { onSelect: (path: string) => void; onCancel: () => void; onPathChange?: (path: string) => void }) {
   const [browsePath, setBrowsePath] = useState('');
   const [data, setData] = useState<BrowseResult | null>(null);
   const [loading, setLoading] = useState(true);
@@ -42,12 +42,13 @@ function FolderPicker({ onSelect, onCancel }: { onSelect: (path: string) => void
       const result: BrowseResult = await res.json();
       setData(result);
       setBrowsePath(result.current);
+      onPathChange?.(result.current);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error');
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [onPathChange]);
 
   useEffect(() => {
     fetchDir();
@@ -330,6 +331,7 @@ export default function IdeaForm({ idea, isOpen, onClose, onSaved }: IdeaFormPro
                     setShowPicker(false);
                   }}
                   onCancel={() => setShowPicker(false)}
+                  onPathChange={(path) => setProjectPath(path)}
                 />
               </div>
             )}
