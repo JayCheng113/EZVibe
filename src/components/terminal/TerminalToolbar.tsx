@@ -28,9 +28,9 @@ export default function TerminalToolbar({
   const isStarting = sessionStatus === 'starting';
 
   return (
-    <div className="flex items-center justify-between border-b border-gray-800 bg-gray-900/80 px-4 py-2">
+    <div className="flex items-center justify-between border-b border-gray-200 bg-gray-50/80 dark:border-gray-800 dark:bg-gray-900/80 px-4 py-2">
       <div className="flex items-center gap-3">
-        <h2 className="text-sm font-semibold text-gray-100 truncate max-w-[200px]">
+        <h2 className="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate max-w-[200px]">
           {idea.name}
         </h2>
         <span
@@ -54,14 +54,14 @@ export default function TerminalToolbar({
         </div>
         <button
           onClick={onEditIdea}
-          className="rounded px-2 py-0.5 text-[10px] text-gray-500 hover:bg-gray-800 hover:text-gray-300"
+          className="rounded px-2 py-0.5 text-[10px] text-gray-500 hover:bg-gray-200 hover:text-gray-700 dark:hover:bg-gray-800 dark:hover:text-gray-300"
           title="Edit idea"
         >
           Edit
         </button>
         <button
           onClick={onDeleteIdea}
-          className="rounded px-2 py-0.5 text-[10px] text-gray-500 hover:bg-gray-800 hover:text-red-400"
+          className="rounded px-2 py-0.5 text-[10px] text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-800 hover:text-red-400"
           title="Remove from EZVibe (files on disk are NOT deleted)"
         >
           Remove

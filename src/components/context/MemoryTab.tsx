@@ -38,8 +38,8 @@ export default function MemoryTab({ idea }: { idea: Idea }) {
     <div className="space-y-3 p-2">
       {files.map(file => (
         <div key={file.name}>
-          <h4 className="px-3 py-1 text-xs font-medium text-gray-400">{file.name}</h4>
-          <pre className="mx-3 max-h-60 overflow-auto rounded bg-gray-900/50 p-3 text-xs text-gray-300">
+          <h4 className="px-3 py-1 text-xs font-medium text-gray-600 dark:text-gray-400">{file.name}</h4>
+          <pre className="mx-3 max-h-60 overflow-auto rounded bg-gray-100 dark:bg-gray-900/50 p-3 text-xs text-gray-700 dark:text-gray-300">
             {file.content}
           </pre>
         </div>

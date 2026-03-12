@@ -15,8 +15,8 @@ export default function StageFilter({ activeStage, onStageChange }: StageFilterP
         onClick={() => onStageChange(null)}
         className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
           activeStage === null
-            ? 'bg-gray-600 text-white'
-            : 'bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-gray-200'
+            ? 'bg-gray-300 dark:bg-gray-600 text-gray-900 dark:text-white'
+            : 'bg-gray-200 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-300 dark:hover:bg-gray-700 hover:text-gray-800 dark:hover:text-gray-200'
         }`}
       >
         All
