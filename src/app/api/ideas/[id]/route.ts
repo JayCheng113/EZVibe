@@ -104,9 +104,6 @@ export async function DELETE(
     const { id } = await params;
     const db = getDb();
 
-    // Enable foreign keys for CASCADE
-    db.pragma('foreign_keys = ON');
-
     const existing = db.prepare('SELECT id FROM ideas WHERE id = ?').get(id);
     if (!existing) {
       return NextResponse.json({ error: 'Idea not found' }, { status: 404 });

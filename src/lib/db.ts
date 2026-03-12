@@ -19,6 +19,9 @@ function initDb(): Database.Database {
   // Enable WAL mode for better concurrent read performance
   instance.pragma('journal_mode = WAL');
 
+  // Enable foreign key enforcement for CASCADE deletes
+  instance.pragma('foreign_keys = ON');
+
   // Create tables if they don't exist
   instance.exec(`
     CREATE TABLE IF NOT EXISTS ideas (
