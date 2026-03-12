@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
     const id = uuidv4();
     const now = new Date().toISOString();
     const claudeProjectKey = projectPath
-      ? projectPath.replace(/\//g, '-').replace(/^-/, '')
+      ? projectPath.replace(/\//g, '-')
       : null;
 
     db.prepare(
