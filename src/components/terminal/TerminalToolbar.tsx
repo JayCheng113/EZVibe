@@ -24,8 +24,22 @@ export default function TerminalToolbar({
   onDeleteIdea,
 }: TerminalToolbarProps) {
   const stageColor = STAGE_COLORS[idea.stage];
-  const isActive = sessionId !== null && sessionStatus !== 'dead' && sessionStatus !== 'none';
+  const isAlive = sessionId !== null && sessionStatus !== 'dead' && sessionStatus !== 'none';
   const isStarting = sessionStatus === 'starting';
+
+  const statusLabel: Record<string, string> = {
+    active: 'Active',
+    waiting: 'Waiting for input',
+    idle: 'Idle',
+    dead: 'Session ended',
+    starting: 'Starting...',
+  };
+
+  const badgeStatus = (['active', 'waiting', 'idle', 'dead'].includes(sessionStatus)
+    ? sessionStatus
+    : sessionStatus === 'starting'
+      ? 'active'
+      : 'none') as 'active' | 'waiting' | 'idle' | 'dead' | 'none';
 
   return (
     <div className="flex items-center justify-between border-b border-gray-800 bg-gray-900/80 px-4 py-2">
@@ -43,12 +57,10 @@ export default function TerminalToolbar({
           {STAGE_LABELS[idea.stage]}
         </span>
         <div className="flex items-center gap-1.5">
-          <StatusBadge
-            status={isActive ? 'active' : sessionStatus === 'dead' ? 'dead' : 'none'}
-          />
-          {isActive && (
+          <StatusBadge status={badgeStatus} />
+          {(isAlive || sessionStatus === 'dead') && (
             <span className="text-[10px] text-gray-500">
-              {isStarting ? 'Starting...' : 'Running'}
+              {statusLabel[sessionStatus] || sessionStatus}
             </span>
           )}
         </div>
@@ -69,7 +81,7 @@ export default function TerminalToolbar({
       </div>
 
       <div className="flex items-center gap-2">
-        {!isActive ? (
+        {!isAlive ? (
           !idea.projectPath ? (
             <button
               onClick={onEditIdea}

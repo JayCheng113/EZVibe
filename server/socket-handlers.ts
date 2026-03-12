@@ -11,6 +11,10 @@ export function registerSocketHandlers(io: Server, sessionManager: SessionManage
     io.to(`session:${sessionId}`).emit('session:error', { sessionId, message });
   };
 
+  sessionManager.onStatusChange = (sessionId: string, status: string) => {
+    io.to(`session:${sessionId}`).emit('session:status', { sessionId, status });
+  };
+
   io.on('connection', (socket: Socket) => {
     console.log(`Client connected: ${socket.id}`);
 
@@ -49,6 +53,7 @@ export function registerSocketHandlers(io: Server, sessionManager: SessionManage
           sessionId: session.id,
           ideaId: session.ideaId,
           status: session.status,
+          detailedStatus: session.detailedStatus,
           pid: session.pid,
         });
       } else {
@@ -73,7 +78,7 @@ export function registerSocketHandlers(io: Server, sessionManager: SessionManage
         socket.emit('terminal:output', { sessionId, data: buffer });
       }
 
-      socket.emit('session:status', { sessionId, status: session.status });
+      socket.emit('session:status', { sessionId, status: session.detailedStatus });
     });
 
     // session:detach — leave session room without killing
