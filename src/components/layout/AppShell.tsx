@@ -12,7 +12,7 @@ export default function AppShell({ children }: AppShellProps) {
       <div className="w-[35%] min-w-[280px] max-w-[420px]">
         <Sidebar />
       </div>
-      <main className="flex-1 overflow-y-auto bg-gray-950">
+      <main className="flex-1 overflow-y-auto bg-white dark:bg-gray-950">
         {children}
       </main>
     </div>

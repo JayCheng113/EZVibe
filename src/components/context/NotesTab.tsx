@@ -67,7 +67,7 @@ export default function NotesTab({ idea }: { idea: Idea }) {
   return (
     <div className="flex h-full flex-col p-2">
       <textarea
-        className="flex-1 resize-none rounded bg-gray-900/50 p-3 text-sm text-gray-200 placeholder-gray-600 outline-none focus:ring-1 focus:ring-gray-700"
+        className="flex-1 resize-none rounded bg-gray-100 dark:bg-gray-900/50 p-3 text-sm text-gray-800 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-600 outline-none focus:ring-1 focus:ring-gray-300 dark:focus:ring-gray-700"
         placeholder="Write notes about this idea..."
         value={content}
         onChange={e => handleChange(e.target.value)}

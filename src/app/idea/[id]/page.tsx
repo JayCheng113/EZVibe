@@ -95,7 +95,7 @@ export default function IdeaDetailPage() {
     <div className="flex h-full flex-col">
       {/* PTY server offline banner */}
       {!isConnected && !isLoading && (
-        <div className="border-b border-yellow-800/50 bg-yellow-900/30 px-4 py-2 text-xs text-yellow-300 flex items-center gap-2">
+        <div className="border-b border-yellow-300/50 bg-yellow-100/50 dark:border-yellow-800/50 dark:bg-yellow-900/30 px-4 py-2 text-xs text-yellow-700 dark:text-yellow-300 flex items-center gap-2">
           <span className="inline-block h-2 w-2 rounded-full bg-yellow-500 animate-pulse" />
           PTY 服务器离线 — 终端功能不可用。请确认 PTY sidecar 服务正在运行 (端口 3001)。
         </div>
@@ -103,7 +103,7 @@ export default function IdeaDetailPage() {
 
       {/* Connection error banner */}
       {(socketError || sessionError) && (
-        <div className="border-b border-red-800/50 bg-red-900/30 px-4 py-2 text-xs text-red-300">
+        <div className="border-b border-red-300/50 bg-red-100/50 dark:border-red-800/50 dark:bg-red-900/30 px-4 py-2 text-xs text-red-700 dark:text-red-300">
           {socketError || sessionError}
         </div>
       )}

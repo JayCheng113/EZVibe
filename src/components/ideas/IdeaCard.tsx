@@ -20,8 +20,8 @@ export default function IdeaCard({ idea, hasActiveSession }: IdeaCardProps) {
       onClick={() => router.push(`/idea/${idea.id}`)}
       className={`w-full text-left border-l-4 px-3 py-2.5 transition-colors ${
         isSelected
-          ? 'bg-gray-800'
-          : 'bg-transparent hover:bg-gray-800/50'
+          ? 'bg-gray-200 dark:bg-gray-800'
+          : 'bg-transparent hover:bg-gray-200/50 dark:hover:bg-gray-800/50'
       }`}
       style={{ borderLeftColor: stageColor }}
     >

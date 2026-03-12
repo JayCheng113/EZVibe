@@ -75,9 +75,9 @@ export default function ClaudemdTab({ idea }: { idea: Idea }) {
 
   return (
     <div className="flex h-full flex-col">
-      <div className="flex items-center justify-between border-b border-gray-800 px-3 py-1.5">
+      <div className="flex items-center justify-between border-b border-gray-200 dark:border-gray-800 px-3 py-1.5">
         <div className="flex items-center gap-2">
-          <span className="text-xs font-medium text-gray-300">CLAUDE.md</span>
+          <span className="text-xs font-medium text-gray-700 dark:text-gray-300">CLAUDE.md</span>
           {!exists && !dirty && (
             <span className="text-[10px] text-gray-600">does not exist yet — start typing to create</span>
           )}
@@ -89,7 +89,7 @@ export default function ClaudemdTab({ idea }: { idea: Idea }) {
           <button
             onClick={() => save(content)}
             disabled={!dirty || saving}
-            className="rounded bg-gray-700 px-2 py-0.5 text-[10px] text-gray-300 hover:bg-gray-600 disabled:opacity-30"
+            className="rounded bg-gray-200 dark:bg-gray-700 px-2 py-0.5 text-[10px] text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 disabled:opacity-30"
           >
             Save
           </button>
@@ -98,7 +98,7 @@ export default function ClaudemdTab({ idea }: { idea: Idea }) {
       <textarea
         value={content}
         onChange={(e) => handleChange(e.target.value)}
-        className="flex-1 resize-none bg-gray-950 px-4 py-3 font-mono text-xs leading-relaxed text-gray-300 outline-none placeholder-gray-600"
+        className="flex-1 resize-none bg-white dark:bg-gray-950 px-4 py-3 font-mono text-xs leading-relaxed text-gray-700 dark:text-gray-300 outline-none placeholder-gray-400 dark:placeholder-gray-600"
         placeholder="# Project Instructions&#10;&#10;Write instructions for Claude Code here...&#10;This file will be read by Claude Code when working on this project."
         spellCheck={false}
       />

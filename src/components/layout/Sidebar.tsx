@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useSWRConfig } from 'swr';
 import IdeaList from '../ideas/IdeaList';
 import IdeaForm from '../ideas/IdeaForm';
+import ThemeToggle from '../common/ThemeToggle';
 
 export default function Sidebar() {
   const [showForm, setShowForm] = useState(false);
@@ -19,17 +20,20 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="flex h-full flex-col bg-gray-900">
-      <div className="flex items-center justify-between border-b border-gray-800 px-4 py-3">
-        <h1 className="text-lg font-bold text-gray-100">
+    <aside className="flex h-full flex-col bg-gray-50 dark:bg-gray-900">
+      <div className="flex items-center justify-between border-b border-gray-200 dark:border-gray-800 px-4 py-3">
+        <h1 className="text-lg font-bold text-gray-900 dark:text-gray-100">
           <span className="mr-1">&#9889;</span>EZVibe
         </h1>
-        <button
-          onClick={() => setShowForm(true)}
-          className="rounded bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-indigo-500"
-        >
-          + New
-        </button>
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          <button
+            onClick={() => setShowForm(true)}
+            className="rounded bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-indigo-500"
+          >
+            + New
+          </button>
+        </div>
       </div>
       <div className="flex-1 overflow-y-auto">
         <IdeaList />

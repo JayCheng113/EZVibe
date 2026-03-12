@@ -101,20 +101,20 @@ function FolderPicker({ onSelect, onCancel, onPathChange }: { onSelect: (path: s
           value={browsePath}
           onChange={(e) => setBrowsePath(e.target.value)}
           onKeyDown={handlePathSubmit}
-          className="flex-1 rounded border border-gray-600 bg-gray-900 px-2 py-1.5 text-xs text-gray-100 outline-none focus:border-indigo-500"
+          className="flex-1 rounded border border-gray-300 bg-gray-50 dark:border-gray-600 dark:bg-gray-900 px-2 py-1.5 text-xs text-gray-900 dark:text-gray-100 outline-none focus:border-indigo-500"
           placeholder="Enter path and press Enter"
         />
         <button
           type="button"
           onClick={() => fetchDir(browsePath)}
-          className="rounded bg-gray-700 px-2 py-1.5 text-xs text-gray-300 hover:bg-gray-600"
+          className="rounded bg-gray-200 dark:bg-gray-700 px-2 py-1.5 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600"
         >
           Go
         </button>
       </div>
 
       {/* Folder list */}
-      <div className="max-h-48 overflow-y-auto rounded border border-gray-600 bg-gray-900">
+      <div className="max-h-48 overflow-y-auto rounded border border-gray-300 bg-gray-50 dark:border-gray-600 dark:bg-gray-900">
         {loading && (
           <div className="px-3 py-4 text-center text-xs text-gray-500">Loading...</div>
         )}
@@ -127,7 +127,7 @@ function FolderPicker({ onSelect, onCancel, onPathChange }: { onSelect: (path: s
               <button
                 type="button"
                 onClick={() => handleNavigate(data.parent!)}
-                className="flex w-full items-center gap-2 border-b border-gray-700 px-3 py-1.5 text-left text-xs text-gray-300 hover:bg-gray-800"
+                className="flex w-full items-center gap-2 border-b border-gray-200 dark:border-gray-700 px-3 py-1.5 text-left text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800"
               >
                 <span className="text-gray-500">..</span>
                 <span className="text-gray-500">Parent directory</span>
@@ -135,7 +135,7 @@ function FolderPicker({ onSelect, onCancel, onPathChange }: { onSelect: (path: s
             )}
             {/* New folder inline input */}
             {creatingFolder ? (
-              <div className="flex items-center gap-1 border-b border-gray-700 px-3 py-1.5">
+              <div className="flex items-center gap-1 border-b border-gray-200 dark:border-gray-700 px-3 py-1.5">
                 <span className="text-yellow-500">&#128193;</span>
                 <input
                   type="text"
@@ -145,7 +145,7 @@ function FolderPicker({ onSelect, onCancel, onPathChange }: { onSelect: (path: s
                     if (e.key === 'Enter') handleCreateFolder();
                     if (e.key === 'Escape') { setCreatingFolder(false); setNewFolderName(''); }
                   }}
-                  className="flex-1 rounded border border-gray-600 bg-gray-800 px-1.5 py-0.5 text-xs text-gray-100 outline-none focus:border-indigo-500"
+                  className="flex-1 rounded border border-gray-300 bg-gray-100 dark:border-gray-600 dark:bg-gray-800 px-1.5 py-0.5 text-xs text-gray-900 dark:text-gray-100 outline-none focus:border-indigo-500"
                   placeholder="Folder name"
                   autoFocus
                 />
@@ -168,7 +168,7 @@ function FolderPicker({ onSelect, onCancel, onPathChange }: { onSelect: (path: s
               <button
                 type="button"
                 onClick={() => setCreatingFolder(true)}
-                className="flex w-full items-center gap-2 border-b border-gray-700 px-3 py-1.5 text-left text-xs text-indigo-400 hover:bg-gray-800"
+                className="flex w-full items-center gap-2 border-b border-gray-200 dark:border-gray-700 px-3 py-1.5 text-left text-xs text-indigo-600 dark:text-indigo-400 hover:bg-gray-200 dark:hover:bg-gray-800"
               >
                 <span>+</span>
                 <span>New Folder</span>
@@ -182,7 +182,7 @@ function FolderPicker({ onSelect, onCancel, onPathChange }: { onSelect: (path: s
                 key={folder.path}
                 type="button"
                 onClick={() => handleNavigate(folder.path)}
-                className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-xs text-gray-200 hover:bg-gray-800"
+                className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-xs text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-800"
               >
                 <span className="text-yellow-500">&#128193;</span>
                 <span className="truncate">{folder.name}</span>
@@ -297,34 +297,34 @@ export default function IdeaForm({ idea, isOpen, onClose, onSaved }: IdeaFormPro
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-      <div className="w-full max-w-md rounded-lg bg-gray-800 p-6 shadow-xl">
-        <h2 className="mb-4 text-lg font-bold text-gray-100">
+      <div className="w-full max-w-md rounded-lg bg-white dark:bg-gray-800 p-6 shadow-xl">
+        <h2 className="mb-4 text-lg font-bold text-gray-900 dark:text-gray-100">
           {isEditing ? 'Edit Idea' : 'New Idea'}
         </h2>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div>
-            <label className="mb-1 block text-sm text-gray-300">Name *</label>
+            <label className="mb-1 block text-sm text-gray-700 dark:text-gray-300">Name *</label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full rounded border border-gray-600 bg-gray-900 px-3 py-2 text-sm text-gray-100 outline-none focus:border-indigo-500"
+              className="w-full rounded border border-gray-300 bg-gray-50 dark:border-gray-600 dark:bg-gray-900 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 outline-none focus:border-indigo-500"
               placeholder="My awesome idea"
               autoFocus
             />
           </div>
           <div>
-            <label className="mb-1 block text-sm text-gray-300">Description</label>
+            <label className="mb-1 block text-sm text-gray-700 dark:text-gray-300">Description</label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full rounded border border-gray-600 bg-gray-900 px-3 py-2 text-sm text-gray-100 outline-none focus:border-indigo-500"
+              className="w-full rounded border border-gray-300 bg-gray-50 dark:border-gray-600 dark:bg-gray-900 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 outline-none focus:border-indigo-500"
               rows={3}
               placeholder="What is this idea about?"
             />
           </div>
           <div>
-            <label className="mb-1 block text-sm text-gray-300">Project Path</label>
+            <label className="mb-1 block text-sm text-gray-700 dark:text-gray-300">Project Path</label>
             {/* Discovered projects from Claude Code */}
             {!isEditing && discoveredProjects.length > 0 && (
               <div className="mb-2">
@@ -341,7 +341,7 @@ export default function IdeaForm({ idea, isOpen, onClose, onSaved }: IdeaFormPro
                       className={`rounded-full border px-2.5 py-1 text-xs transition-colors ${
                         projectPath === proj.path
                           ? 'border-indigo-500 bg-indigo-500/20 text-indigo-300'
-                          : 'border-gray-600 bg-gray-900 text-gray-300 hover:border-gray-500 hover:bg-gray-800'
+                          : 'border-gray-300 bg-gray-50 text-gray-700 hover:border-gray-400 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:hover:border-gray-500 dark:hover:bg-gray-800'
                       }`}
                       title={proj.path}
                     >
@@ -362,13 +362,13 @@ export default function IdeaForm({ idea, isOpen, onClose, onSaved }: IdeaFormPro
                 type="text"
                 value={projectPath}
                 onChange={(e) => setProjectPath(e.target.value)}
-                className="flex-1 rounded border border-gray-600 bg-gray-900 px-3 py-2 text-sm text-gray-100 outline-none focus:border-indigo-500"
+                className="flex-1 rounded border border-gray-300 bg-gray-50 dark:border-gray-600 dark:bg-gray-900 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 outline-none focus:border-indigo-500"
                 placeholder="e.g. /Users/you/my-project"
               />
               <button
                 type="button"
                 onClick={() => setShowPicker(!showPicker)}
-                className="rounded border border-gray-600 bg-gray-700 px-3 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-gray-100"
+                className="rounded border border-gray-300 bg-gray-200 dark:border-gray-600 dark:bg-gray-700 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 hover:text-gray-900 dark:hover:text-gray-100"
                 title="Browse folders"
               >
                 &#128193;
@@ -394,7 +394,7 @@ export default function IdeaForm({ idea, isOpen, onClose, onSaved }: IdeaFormPro
             <button
               type="button"
               onClick={onClose}
-              className="rounded px-4 py-2 text-sm text-gray-400 hover:text-gray-200"
+              className="rounded px-4 py-2 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
             >
               Cancel
             </button>
