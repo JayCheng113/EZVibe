@@ -1,318 +1,204 @@
+<p align="center">
+  <img src="https://img.shields.io/badge/Claude_Code-Orchestrator-blueviolet?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0id2hpdGUiIGQ9Ik0xMiAyTDIgNyAxMiAxMiAyMiA3eiIvPjxwYXRoIGZpbGw9IndoaXRlIiBvcGFjaXR5PSIuNyIgZD0iTTIgMTdsMTAgNSAxMC01TTIgMTJsMTAgNSAxMC01Ii8+PC9zdmc+"/>
+  <br/>
+  <img src="https://img.shields.io/badge/license-MIT-blue.svg" />
+  <img src="https://img.shields.io/badge/Next.js-15-black" />
+  <img src="https://img.shields.io/badge/node--pty-realtime-green" />
+  <img src="https://img.shields.io/badge/xterm.js-WebGL-orange" />
+</p>
+
 # EZVibe
 
-**Your AI Development Command Center** — Manage multiple Claude Code sessions and track ideas from inception to implementation, all in one browser tab.
+> **Stop juggling terminals. Start shipping ideas.**
 
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Next.js](https://img.shields.io/badge/Next.js-15-black)
-![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)
+EZVibe is a local web dashboard that lets you run multiple Claude Code sessions side by side, with full idea lifecycle tracking — from brainstorm to production. One command to start, zero config.
+
+```bash
+npx ezvibe
+```
 
 ---
 
-[中文文档](README_CN.md)
+## Why EZVibe?
 
-## The Problem
+You're running 3 Claude Code sessions across different projects. Terminal A is implementing auth, Terminal B is debugging an API, Terminal C is writing tests. You keep losing track: *which terminal was which? What was I doing in that project? Where did Claude's plan go?*
 
-You're an AI-native developer running 2-5 projects in parallel with Claude Code. Each project lives in a different terminal. You're constantly switching tabs, losing context, and forgetting where you left off.
-
-Existing tools (Claude Squad, CCManager, Codeman) manage sessions but don't track *what you're building or why*. They're multiplexers, not command centers.
-
-## The Solution
-
-EZVibe is a local web dashboard that combines:
-
-- **Idea Lifecycle Management** — Track each idea through stages: Exploring → Planning → Implementing → Done
-- **Embedded Claude Code Terminals** — Full xterm.js terminals running real Claude Code sessions in your browser
-- **Context Panel** — View Claude's Plans, Memory files, and your own Notes alongside the terminal
-- **Deep `~/.claude/` Integration** — Reads your existing Claude Code data (plans, memory, session history) directly
+**EZVibe fixes this.** Each project gets its own idea card, its own terminal, and its own context panel — all visible at a glance.
 
 ```
 ┌─────────────────────┬──────────────────────────────────┐
 │  IDEAS               │  Terminal (xterm.js)              │
 │                      │  $ claude                         │
-│  ● EZVibe      ⚡    │  > Implementing feature...        │
-│  ○ Trading     📋    │                                   │
-│  ○ PEPO        💬    │──────────────────────────────────│
-│                      │  [Plans] [Memory] [Notes]         │
-│  + New Idea          │  # EZVibe Implementation Plan     │
-│                      │  ## Step 1: Scaffold...           │
+│  ● Auth System  ⚡   │  > Implementing JWT middleware... │
+│  ○ Trading Bot  📋   │                                   │
+│  ○ Blog CMS     💬   │──────────────────────────────────│
+│                      │  [Instructions] [Memory] [Notes]  │
+│  + New Idea          │  # Implementation Plan             │
+│                      │  ## Step 1: Setup routes...        │
 └─────────────────────┴──────────────────────────────────┘
 ```
 
-## Key Differentiators
+### What makes it different?
 
-| | Cloud Claude Code | Claude Squad / CCManager | **EZVibe** |
+| | Claude Code (terminal) | Claude Squad / CCManager | **EZVibe** |
 |---|---|---|---|
-| Form | Cloud web | Terminal TUI | **Local web app** |
-| Perspective | Single session | Multi-session management | **Idea lifecycle** |
-| Data | Cloud | Doesn't read ~/.claude/ | **Deep ~/.claude/ integration** |
-| Context | No persistence | None | **Plans / Memory / Notes panel** |
-| Control | One terminal | Switch terminals | **Embedded terminals + context** |
+| Interface | Single terminal | TUI multiplexer | **Web dashboard** |
+| Perspective | One session at a time | Session management | **Idea lifecycle tracking** |
+| Context | Scattered across files | None | **Plans + Memory + Notes panel** |
+| `~/.claude/` data | N/A | Not read | **Deep integration** |
+
+---
 
 ## Quick Start
 
 ### Prerequisites
 
 - **Node.js 18+**
-- **Claude Code CLI** installed and in PATH — [Install Claude Code](https://claude.ai/code)
+- **Claude Code** installed and in PATH — [Install Claude Code](https://claude.ai/code)
 - **macOS or Linux** (node-pty requires a POSIX system)
 
-### Install & Run
+### One command. That's it.
 
 ```bash
-git clone https://github.com/yourusername/ezvibe.git
-cd ezvibe
+npx ezvibe
+```
+
+First run builds automatically (~30s), then opens at **http://localhost:3000**.
+
+```bash
+# Custom ports
+npx ezvibe --port 8080 --pty-port 4000
+```
+
+---
+
+## How It Works
+
+### 1. Create an Idea
+
+Click **"+ New"** → Name your project → Set the project directory path.
+
+> **Tip:** Setting a project path unlocks the full power — EZVibe reads that project's `CLAUDE.md`, memory files, and plans from `~/.claude/` automatically.
+
+### 2. Launch Claude Code
+
+Click **"Start Claude Code"** — a real terminal spawns in your browser. Full color, full keyboard, full scrollback. It's the same Claude Code you know, just embedded.
+
+### 3. Track Progress
+
+Move ideas through stages as you work:
+
+```
+💬 Exploring  →  📋 Planning  →  ⚡ Implementing  →  ✅ Done
+```
+
+### 4. Use the Context Panel
+
+Four tabs sit below your terminal, giving you everything without switching windows:
+
+| Tab | What you get |
+|---|---|
+| **Instructions** | Edit `CLAUDE.md` live — Claude reads it on next message |
+| **Memory** | Browse Claude's project memory files |
+| **Notes** | Your freeform scratchpad (auto-saves) |
+| **Token** | Usage stats, model breakdown, daily activity |
+
+### 5. Switch Freely
+
+Click any idea in the sidebar — the terminal switches instantly with buffer preserved. Background sessions keep running. Come back anytime, right where you left off.
+
+---
+
+## Architecture
+
+EZVibe uses the same **dual-process pattern as VS Code** — a UI process and a terminal sidecar:
+
+```
+Browser (:3000)
+  ├── React UI + REST APIs (Next.js 15)
+  │   └── SQLite for ideas, notes, sessions
+  └── WebSocket ──→ PTY Sidecar (:3001)
+                     ├── node-pty terminals (real OS PTYs)
+                     ├── ~100KB rolling buffer per session
+                     └── Socket.io rooms for multi-session routing
+```
+
+**Why two processes?** `node-pty` is a C++ native addon. Next.js webpack breaks native addons. Separating them means each does what it's best at.
+
+### Security
+
+All local, nothing leaves your machine:
+- PTY server binds to `127.0.0.1` only
+- Auth token required for WebSocket handshake
+- CORS locked to `localhost:3000`
+
+---
+
+## Development
+
+```bash
+git clone https://github.com/JayCheng113/EZVibe.git
+cd EZVibe
 npm install
 npm run dev
 ```
 
-This starts two processes simultaneously:
-- **Next.js** on `http://localhost:3000` (UI + API)
-- **PTY Server** on `http://localhost:3001` (terminal management)
+Starts Next.js (:3000) and PTY sidecar (:3001) concurrently with hot reload.
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+### Tech Stack
 
-## Usage Guide
+| Layer | Technology |
+|---|---|
+| Frontend | Next.js 15 (App Router) + Tailwind CSS |
+| Terminal | xterm.js 5 + WebGL renderer + FitAddon |
+| Realtime | Socket.io (WebSocket + auto-reconnect) |
+| PTY | node-pty (same as VS Code's terminal) |
+| Database | better-sqlite3 (WAL mode, zero-config) |
+| Data Fetching | SWR (auto-revalidation) |
 
-### Step 1: Create Your First Idea
-
-Click the **"+ New"** button in the left sidebar.
-
-Fill in:
-- **Name** (required) — e.g., "My Trading Bot"
-- **Description** (optional) — What this idea is about
-- **Project Path** (optional) — Click the folder button to browse and select a local directory (you can also create new folders). This is where Claude Code will run.
-
-> **Tip:** If you set a project path, EZVibe will automatically read that project's Claude Code memory and CLAUDE.md from `~/.claude/`.
-
-### Step 2: Launch Claude Code
-
-1. Click on an idea card in the sidebar to open it
-2. Click **"Start Claude Code"** in the toolbar
-3. A real Claude Code session launches in the embedded terminal
-4. Type and interact just like a normal terminal — full keyboard support, colors, scrollback
-
-```
-┌──────────────────────────────────────────────┐
-│  TerminalToolbar: [EZVibe ⚡ 实现] ● Active   │
-│  [Stop]                                       │
-├──────────────────────────────────────────────┤
-│  $ claude                                     │
-│  ╭─────────────────────────────────────╮      │
-│  │  Claude Code  (EZVibe project)      │      │
-│  ╰─────────────────────────────────────╯      │
-│  claude> help me implement the login page     │
-│  ✓ Reading src/app/login/page.tsx             │
-│  ✓ Creating login form component...           │
-└──────────────────────────────────────────────┘
-```
-
-### Step 3: Use the Context Panel
-
-Below the terminal, you'll find four tabs:
-
-| Tab | What it shows | Source |
-|---|---|---|
-| **Instructions** | Edit the project's `CLAUDE.md` — instructions Claude Code reads on startup | `{project}/CLAUDE.md` |
-| **Memory** | Project-specific memory files | `~/.claude/projects/{key}/memory/` |
-| **Notes** | Your freeform notes (auto-saved on typing) | SQLite database |
-| **Token** | Global token usage stats, model breakdown, daily activity | `~/.claude/stats-cache.json` |
-
-This means you can edit Claude Code's project instructions or review token usage *while* interacting with Claude Code — no more switching windows.
-
-### Step 4: Manage Multiple Ideas
-
-- **Switch:** Click any idea in the sidebar — the terminal switches instantly, buffer restored
-- **Background:** Terminal sessions keep running when you switch away
-- **Edit:** Click "Edit" in the toolbar to modify name, description, project path, or stage
-- **Remove:** Click "Remove" to remove an idea from EZVibe (project files on disk are NOT deleted)
-- **Status:** Green dot = active session, Red dot = dead session, No dot = no session
-
-### Step 5: Typical Workflow
-
-```
-1. Have a new idea
-   └─ Create it in EZVibe (stage: Exploring 💬)
-
-2. Brainstorm with ChatGPT or another LLM
-   └─ Paste key insights into the Notes tab
-
-3. Open Claude Code terminal, use plan mode
-   └─ Update stage to Planning 📋
-   └─ Plans appear in the Plans tab automatically
-
-4. Start implementing
-   └─ Update stage to Implementing ⚡
-   └─ Claude Code runs in the embedded terminal
-   └─ Memory/Plans/Notes all visible alongside
-
-5. Done!
-   └─ Update stage to Done ✅
-```
-
-## Architecture
-
-### Why Two Processes?
-
-EZVibe uses a **dual-process architecture**, the same pattern VS Code uses:
-
-```
-┌─────────────────── Browser (localhost:3000) ───────────────┐
-│                                                             │
-│   ┌─────────────┐         ┌────────────────────────────┐   │
-│   │  IdeaList    │         │  TerminalView (xterm.js)   │   │
-│   │  IdeaCard    │         │  ContextPanel              │   │
-│   │  StageFilter │         │   [Plans|Memory|Notes]     │   │
-│   └──────┬──────┘         └──────────┬─────────────────┘   │
-│          │ REST (SWR)                │ WebSocket (Socket.io)│
-└──────────┼───────────────────────────┼─────────────────────┘
-           │                           │
-           ▼                           ▼
-┌────────────────────┐    ┌────────────────────────┐
-│   Next.js :3000    │    │   PTY Server :3001     │
-│                    │    │   (Express + Socket.io) │
-│  App Router pages  │    │                        │
-│  REST API routes   │    │  SessionManager        │
-│  SQLite (ideas,    │    │   ├─ PTY #1 (claude)   │
-│   notes, sessions) │    │   ├─ PTY #2 (claude)   │
-│  ClaudeDataReader  │    │   └─ PTY #3 (claude)   │
-│   (reads ~/.claude)│    │                        │
-└────────┬───────────┘    │  Buffer management     │
-         │                │  Socket.io rooms       │
-         ▼                └──────────┬─────────────┘
-┌────────────────────────────────────┼──────────────────┐
-│  File System                       │                  │
-│                                    ▼                  │
-│  ~/.ezvibe/                  ~/.claude/               │
-│   ├── ezvibe.db               ├── projects/           │
-│   └── .auth-token             │   └── {key}/memory/   │
-│                               ├── plans/              │
-│                               └── history.jsonl       │
-└───────────────────────────────────────────────────────┘
-```
-
-**Why not one process?** `node-pty` is a C++ native addon that spawns real OS pseudo-terminals. Next.js bundles server code with webpack, which breaks native addons. Separating the PTY server avoids this entirely — each process uses the right tool for the job.
-
-### Data Flow
-
-**Creating a terminal session:**
-```
-User clicks "Start Claude Code"
-  → Frontend emits session:create via Socket.io
-  → PTY Server spawns: zsh -l -c claude (in project directory)
-  → PTY output streams via WebSocket to xterm.js
-  → User keystrokes flow back via WebSocket to PTY stdin
-```
-
-**Reconnecting after page refresh:**
-```
-Page refreshes → Socket.io reconnects
-  → Frontend emits session:attach
-  → PTY Server sends buffered output (~100KB rolling buffer)
-  → xterm.js replays buffer → terminal state restored
-  → Live output resumes
-```
-
-**Switching between ideas:**
-```
-User clicks different idea in sidebar
-  → Frontend emits session:detach (old) + session:attach (new)
-  → Socket.io leaves old room, joins new room
-  → New session's buffer replayed into terminal
-  → Context panel fetches new idea's plans/memory/notes
-```
-
-### Security Model
-
-Running a PTY server on a web port requires careful security:
-
-1. **Localhost only** — PTY server binds to `127.0.0.1:3001`, not `0.0.0.0`
-2. **Auth token** — Generated on startup, written to `~/.ezvibe/.auth-token`, required for WebSocket handshake
-3. **CORS** — Socket.io only accepts connections from `http://localhost:3000`
-
-### Key Components
-
-| Component | File | Responsibility |
-|---|---|---|
-| **SessionManager** | `server/session-manager.ts` | PTY lifecycle: spawn, kill, buffer, status, DB sync |
-| **TerminalView** | `src/components/terminal/TerminalView.tsx` | xterm.js rendering, Socket.io piping, resize handling |
-| **ClaudeDataReader** | `src/lib/claude-data.ts` | Reads `~/.claude/` directory (plans, memory) |
-| **AppShell** | `src/components/layout/AppShell.tsx` | Two-column layout (sidebar + main) |
-| **ContextPanel** | `src/components/context/ContextPanel.tsx` | Tabbed panel: Plans / Memory / Notes |
-
-## How This Project Was Built
-
-EZVibe was designed and built entirely through AI-assisted development using Claude Code with the [Superpowers](https://github.com/anthropics/claude-plugins-official) plugin:
-
-1. **Brainstorming** — Used the `superpowers:brainstorming` skill to explore the problem space, compare approaches (CLI vs web vs VSCode extension), and decide on the Idea Board + Embedded Terminal design
-2. **Research** — Surveyed existing tools (Claude Squad, CCManager, Codeman, Amux) and technologies (Claude Agent SDK, xterm.js, node-pty)
-3. **Design** — Wrote a detailed spec with architecture, data models, API routes, component hierarchy, error handling, and security model. Reviewed with automated spec reviewer.
-4. **Planning** — Created a 7-step implementation plan using `superpowers:writing-plans`
-5. **Implementation** — Executed using `superpowers:subagent-driven-development` — each step was implemented by a fresh subagent, then reviewed for spec compliance and code quality
-6. **Testing** — 18 end-to-end tests covering all API endpoints, error handling, and Claude data integration
-
-The full design spec is at [`docs/superpowers/specs/2026-03-12-ezvibe-design.md`](docs/superpowers/specs/2026-03-12-ezvibe-design.md).
-
-## Tech Stack
-
-| Layer | Technology | Why |
-|---|---|---|
-| Frontend | Next.js 15 (App Router) | Best AI-assisted dev ecosystem, SSR + API routes |
-| Styling | Tailwind CSS | Rapid dark theme development |
-| Terminal | xterm.js 5 + WebGL + FitAddon | Industry standard web terminal, GPU-accelerated |
-| Data Fetching | SWR | Auto-revalidation, optimistic updates |
-| Realtime | Socket.io | Reliable WebSocket with auto-reconnect |
-| PTY | node-pty | Real OS pseudo-terminals (same as VS Code) |
-| Database | better-sqlite3 (WAL) | Zero-config, synchronous API, WAL for concurrency |
-| Sidecar | Express | Lightweight HTTP server for native addon isolation |
-
-## Project Structure
+### Project Structure
 
 ```
 ezvibe/
-├── src/
-│   ├── app/                        # Next.js App Router
-│   │   ├── api/
-│   │   │   ├── ideas/              #   Idea CRUD (list, create, get, update, delete)
-│   │   │   ├── notes/              #   Notes CRUD
-│   │   │   ├── claude/             #   Claude data reader (plans, memory)
-│   │   │   └── auth-token/         #   PTY server auth token proxy
-│   │   ├── idea/[id]/              #   Idea detail page (terminal + context)
-│   │   └── ideas/                  #   Main dashboard
-│   ├── components/
-│   │   ├── context/                #   ContextPanel, PlanTab, MemoryTab, NotesTab
-│   │   ├── ideas/                  #   IdeaList, IdeaCard, IdeaForm
-│   │   ├── layout/                 #   AppShell (35/65 split), Sidebar
-│   │   └── terminal/               #   TerminalView (xterm.js), TerminalToolbar
-│   ├── hooks/
-│   │   ├── useIdeas.ts             #   SWR hook for idea CRUD
-│   │   ├── useSocket.ts            #   Socket.io client connection
-│   │   └── useSessions.ts          #   Terminal session management
-│   └── lib/
-│       ├── db.ts                   #   SQLite init, schema, WAL mode
-│       ├── types.ts                #   TypeScript interfaces (Idea, Session, Note, WS events)
-│       ├── constants.ts            #   Stage definitions, colors, labels
-│       └── claude-data.ts          #   ~/.claude/ directory reader
+├── bin/ezvibe.js              # CLI entry point (npx ezvibe)
 ├── server/
-│   ├── index.ts                    #   Express + Socket.io + auth + graceful shutdown
-│   ├── session-manager.ts          #   PTY spawn/kill/buffer/status/DB sync
-│   └── socket-handlers.ts          #   WebSocket event routing + room management
-├── docs/
-│   └── superpowers/specs/          #   Design specification
-└── package.json                    #   npm run dev = concurrently Next.js + PTY server
+│   ├── index.ts               # Express + Socket.io + auth
+│   ├── session-manager.ts     # PTY lifecycle + buffer management
+│   └── socket-handlers.ts     # WebSocket event routing
+├── src/
+│   ├── app/                   # Next.js App Router + API routes
+│   ├── components/
+│   │   ├── terminal/          # TerminalView (xterm.js), Toolbar
+│   │   ├── context/           # Plans, Memory, Notes, Token tabs
+│   │   ├── ideas/             # IdeaList, IdeaCard, IdeaForm
+│   │   └── layout/            # AppShell, Sidebar
+│   ├── hooks/                 # useSocket, useSessions, useIdeas
+│   └── lib/                   # db, types, claude-data reader
+└── package.json
 ```
+
+---
 
 ## Roadmap
 
+- [x] Light / dark theme
 - [ ] Multiple terminal tabs per idea
-- [ ] Smart status detection (active / waiting for input / idle)
-- [ ] Auto-discover existing projects from `~/.claude/projects/`
-- [ ] Session transcript viewer (parse Claude's JSONL files)
-- [ ] tmux backend for PTY persistence across server restarts
-- [ ] Claude Agent SDK integration (programmatic control)
+- [ ] Smart status detection (active / waiting / idle)
+- [ ] Auto-discover projects from `~/.claude/projects/`
+- [ ] Session transcript viewer (parse JSONL)
+- [ ] tmux backend for PTY persistence across restarts
+- [ ] Claude Agent SDK integration
 - [ ] Token cost tracking per idea
-- [ ] Light theme
-- [ ] Keyboard shortcuts (Cmd+1-5 to switch ideas)
+- [ ] Keyboard shortcuts (Cmd+1-5 to switch)
+
+---
+
+## Built With Claude Code
+
+EZVibe was designed and built entirely through AI-assisted development using Claude Code + [Superpowers](https://github.com/anthropics/claude-plugins-official) plugin — from brainstorming to spec to implementation. The full design spec lives at [`docs/superpowers/specs/`](docs/superpowers/specs/).
+
+---
 
 ## License
 
-MIT
+MIT — do whatever you want with it.
