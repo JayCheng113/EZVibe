@@ -6,9 +6,10 @@ import { STAGE_LABELS, STAGE_COLORS } from '@/lib/constants';
 
 interface IdeaCardProps {
   idea: Idea;
+  hasActiveSession?: boolean;
 }
 
-export default function IdeaCard({ idea }: IdeaCardProps) {
+export default function IdeaCard({ idea, hasActiveSession }: IdeaCardProps) {
   const router = useRouter();
   const pathname = usePathname();
   const isSelected = pathname === `/idea/${idea.id}`;
@@ -25,6 +26,9 @@ export default function IdeaCard({ idea }: IdeaCardProps) {
       style={{ borderLeftColor: stageColor }}
     >
       <div className="flex items-center gap-2">
+        {hasActiveSession && (
+          <span className="inline-block h-2 w-2 shrink-0 animate-pulse rounded-full bg-green-400" />
+        )}
         <span
           className="text-sm font-bold truncate"
           style={{ color: idea.color || stageColor }}
