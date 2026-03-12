@@ -16,6 +16,7 @@ export function registerSocketHandlers(io: Server, sessionManager: SessionManage
 
     // session:create — spawn new PTY
     socket.on('session:create', ({ ideaId, cwd }: { ideaId: string; cwd: string }) => {
+      console.log(`session:create request — ideaId=${ideaId}, cwd=${cwd}`);
       try {
         const session = sessionManager.createSession(ideaId, cwd);
 
@@ -35,7 +36,23 @@ export function registerSocketHandlers(io: Server, sessionManager: SessionManage
           pid: session.pid,
         });
       } catch (err: any) {
+        console.error('session:create failed:', err);
         socket.emit('session:error', { message: err.message });
+      }
+    });
+
+    // session:find — find active session for an idea
+    socket.on('session:find', ({ ideaId }: { ideaId: string }) => {
+      const session = sessionManager.getSessionByIdeaId(ideaId);
+      if (session) {
+        socket.emit('session:found', {
+          sessionId: session.id,
+          ideaId: session.ideaId,
+          status: session.status,
+          pid: session.pid,
+        });
+      } else {
+        socket.emit('session:found', { ideaId, sessionId: null });
       }
     });
 

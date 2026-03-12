@@ -57,16 +57,37 @@ export class SessionManager {
     const startedAt = new Date().toISOString();
     const spawnTime = Date.now();
 
-    const ptyProcess = pty.spawn(shell, ['-l', '-c', 'claude'], {
+    // Resolve claude path - check common locations
+    let claudePath = 'claude';
+    const homedir = os.homedir();
+    const candidates = [
+      path.join(homedir, '.npm-global', 'bin', 'claude'),
+      path.join(homedir, '.local', 'bin', 'claude'),
+      '/usr/local/bin/claude',
+    ];
+    for (const candidate of candidates) {
+      if (fs.existsSync(candidate)) {
+        claudePath = candidate;
+        break;
+      }
+    }
+
+    // Build clean env: remove all Claude Code env vars to avoid nested-session detection
+    const cleanEnv: { [key: string]: string } = {};
+    for (const [k, v] of Object.entries(process.env)) {
+      if (v !== undefined && !k.startsWith('CLAUDE')) {
+        cleanEnv[k] = v;
+      }
+    }
+    cleanEnv.TERM = 'xterm-256color';
+    cleanEnv.COLORTERM = 'truecolor';
+
+    const ptyProcess = pty.spawn(claudePath, [], {
       name: 'xterm-256color',
       cols: 120,
       rows: 30,
       cwd,
-      env: {
-        ...process.env,
-        TERM: 'xterm-256color',
-        COLORTERM: 'truecolor',
-      } as { [key: string]: string },
+      env: cleanEnv,
     });
 
     const session: ManagedSession = {

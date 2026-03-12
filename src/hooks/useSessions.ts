@@ -16,6 +16,29 @@ export function useSessions({ socket, ideaId }: UseSessionsOptions) {
   const ideaIdRef = useRef(ideaId);
   ideaIdRef.current = ideaId;
 
+  // On mount: find any existing active session for this idea
+  useEffect(() => {
+    if (!socket || !ideaId) return;
+
+    const onFound = ({ sessionId: sid, status }: { ideaId: string; sessionId: string | null; status?: string; pid?: number }) => {
+      if (sid) {
+        console.log('[useSessions] found existing session', sid, status);
+        setSessionId(sid);
+        setSessionStatus(status || 'active');
+        setError(null);
+        // Attach to get buffer replay and output
+        socket.emit('session:attach', { sessionId: sid });
+      }
+    };
+
+    socket.once('session:found', onFound);
+    socket.emit('session:find', { ideaId });
+
+    return () => {
+      socket.off('session:found', onFound);
+    };
+  }, [socket, ideaId]);
+
   // Listen to session events
   useEffect(() => {
     if (!socket) return;
@@ -61,8 +84,16 @@ export function useSessions({ socket, ideaId }: UseSessionsOptions) {
 
   const createSession = useCallback(
     (cwd: string) => {
-      if (!socket || !ideaId) return;
+      if (!socket || !ideaId) {
+        setError(!socket ? 'PTY server not connected' : 'No idea selected');
+        return;
+      }
+      if (!socket.connected) {
+        setError('PTY server not connected — try refreshing the page');
+        return;
+      }
       setError(null);
+      console.log('[useSessions] emitting session:create', { ideaId, cwd });
       socket.emit('session:create', { ideaId, cwd });
     },
     [socket, ideaId]
