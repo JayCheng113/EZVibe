@@ -81,10 +81,20 @@ httpServer.listen(PORT, HOST, () => {
 
 // Graceful shutdown
 function shutdown(signal: string) {
-  console.log(`\nReceived ${signal}, shutting down gracefully...`);
+  console.log(`\n[${new Date().toISOString()}] Received ${signal}, shutting down gracefully...`);
+  console.log(`Closing Socket.io server (disconnecting ${io.engine?.clientsCount ?? 0} client(s))...`);
   io.close();
   sessionManager.shutdown();
-  console.log('All sessions cleaned up. Exiting.');
+  // Clean up auth token file
+  try {
+    if (fs.existsSync(AUTH_TOKEN_PATH)) {
+      fs.unlinkSync(AUTH_TOKEN_PATH);
+      console.log('Auth token file removed.');
+    }
+  } catch {
+    // Ignore cleanup errors
+  }
+  console.log('Shutdown complete. Exiting.');
   process.exit(0);
 }
 

@@ -45,7 +45,12 @@ export async function POST(
       return NextResponse.json({ error: 'Idea not found' }, { status: 404 });
     }
 
-    const body = await request.json();
+    let body: any;
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
+    }
     const { content } = body;
 
     if (!content || typeof content !== 'string') {

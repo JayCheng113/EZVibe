@@ -25,7 +25,12 @@ export async function PATCH(
       return NextResponse.json({ error: 'Note not found' }, { status: 404 });
     }
 
-    const body = await request.json();
+    let body: any;
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
+    }
     const { content } = body;
 
     if (content === undefined) {

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { Socket } from 'socket.io-client';
 import '@xterm/xterm/css/xterm.css';
 
@@ -8,9 +8,10 @@ interface TerminalViewProps {
   sessionId: string | null;
   socket: Socket | null;
   onSessionExit?: () => void;
+  onRetry?: () => void;
 }
 
-export default function TerminalView({ sessionId, socket, onSessionExit }: TerminalViewProps) {
+export default function TerminalView({ sessionId, socket, onSessionExit, onRetry }: TerminalViewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const terminalRef = useRef<any>(null);
   const fitAddonRef = useRef<any>(null);
@@ -18,6 +19,8 @@ export default function TerminalView({ sessionId, socket, onSessionExit }: Termi
   const currentSessionRef = useRef<string | null>(null);
   const socketRef = useRef<Socket | null>(socket);
   socketRef.current = socket;
+
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // Initialize xterm.js (once)
   useEffect(() => {
@@ -169,8 +172,20 @@ export default function TerminalView({ sessionId, socket, onSessionExit }: Termi
       }
     };
 
+    const onError = ({ sessionId: sid, message }: { sessionId?: string; message: string }) => {
+      if (!sid || sid === sessionId) {
+        const errorText = message || 'Claude Code 启动失败，请检查 claude 是否已安装并在 PATH 中';
+        terminal.write(`\r\n\x1b[31m[Error] ${errorText}\x1b[0m\r\n`);
+        setErrorMessage(errorText);
+      }
+    };
+
+    // Clear any previous error when starting a new session
+    setErrorMessage(null);
+
     socket.on('terminal:output', onOutput);
     socket.on('session:exit', onExit);
+    socket.on('session:error', onError);
 
     // Send user input to server
     const onDataDisposable = terminal.onData((data: string) => {
@@ -196,6 +211,7 @@ export default function TerminalView({ sessionId, socket, onSessionExit }: Termi
     return () => {
       socket.off('terminal:output', onOutput);
       socket.off('session:exit', onExit);
+      socket.off('session:error', onError);
       onDataDisposable.dispose();
     };
   }, [sessionId, socket, onSessionExit]);
@@ -219,10 +235,28 @@ export default function TerminalView({ sessionId, socket, onSessionExit }: Termi
   }, [socket]);
 
   return (
-    <div
-      ref={containerRef}
-      className="h-full w-full min-h-[200px]"
-      style={{ backgroundColor: '#0a0a1a' }}
-    />
+    <div className="relative h-full w-full min-h-[200px]">
+      <div
+        ref={containerRef}
+        className="h-full w-full"
+        style={{ backgroundColor: '#0a0a1a' }}
+      />
+      {errorMessage && (
+        <div className="absolute bottom-4 left-4 right-4 flex items-center gap-3 rounded border border-red-700/60 bg-red-950/90 px-4 py-3 text-sm text-red-300 shadow-lg">
+          <span className="flex-1">{errorMessage}</span>
+          {onRetry && (
+            <button
+              onClick={() => {
+                setErrorMessage(null);
+                onRetry();
+              }}
+              className="shrink-0 rounded bg-red-700 px-3 py-1 text-xs font-medium text-white hover:bg-red-600 transition-colors"
+            >
+              重试
+            </button>
+          )}
+        </div>
+      )}
+    </div>
   );
 }

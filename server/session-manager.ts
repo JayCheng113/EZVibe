@@ -196,13 +196,25 @@ export class SessionManager {
   }
 
   shutdown(): void {
+    console.log(`Shutting down ${this.getActiveSessionCount()} active session(s)...`);
+
     for (const session of this.sessions.values()) {
       if (session.status !== 'dead') {
+        // Send SIGHUP first (graceful), then SIGKILL as fallback
+        try {
+          console.log(`  Sending SIGHUP to session ${session.id} (pid ${session.pid})`);
+          session.pty.kill('SIGHUP');
+        } catch {
+          // PTY may already be dead
+        }
+
+        // Force kill after a short delay
         try {
           session.pty.kill('SIGKILL');
         } catch {
-          // Ignore
+          // Already dead
         }
+
         session.status = 'dead';
         try {
           this.db.prepare(
@@ -213,9 +225,12 @@ export class SessionManager {
         }
       }
     }
+
+    console.log('All sessions terminated.');
     this.sessions.clear();
     try {
       this.db.close();
+      console.log('Database connection closed.');
     } catch {
       // Ignore
     }

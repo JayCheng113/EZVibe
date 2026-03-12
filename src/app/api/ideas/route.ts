@@ -45,7 +45,12 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const db = getDb();
-    const body = await request.json();
+    let body: any;
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
+    }
     const { name, description, projectPath } = body;
 
     if (!name || typeof name !== 'string' || name.trim().length === 0) {
