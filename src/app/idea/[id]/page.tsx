@@ -9,6 +9,7 @@ import type { Idea } from '@/lib/types';
 import { useSocket } from '@/hooks/useSocket';
 import { useSessions } from '@/hooks/useSessions';
 import TerminalToolbar from '@/components/terminal/TerminalToolbar';
+import ContextPanel from '@/components/context/ContextPanel';
 
 // TerminalView must be loaded client-only (xterm.js uses DOM APIs)
 const TerminalView = dynamic(
@@ -88,13 +89,18 @@ export default function IdeaDetailPage() {
         onKillSession={handleKillSession}
       />
 
-      {/* Terminal area */}
-      <div className="flex-1 min-h-0">
+      {/* Terminal area (~60%) */}
+      <div className="flex-[6] min-h-0">
         <TerminalView
           sessionId={sessionId}
           socket={socket}
           onSessionExit={handleSessionExit}
         />
+      </div>
+
+      {/* Context panel (~40%) */}
+      <div className="flex-[4] min-h-0">
+        <ContextPanel idea={idea} />
       </div>
     </div>
   );
