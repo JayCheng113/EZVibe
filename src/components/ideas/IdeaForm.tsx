@@ -14,6 +14,12 @@ interface BrowseResult {
   folders: FolderEntry[];
 }
 
+interface DiscoveredProject {
+  path: string;
+  name: string;
+  hasClaudeMd: boolean;
+}
+
 interface IdeaFormProps {
   idea?: Idea | null;
   isOpen: boolean;
@@ -219,6 +225,8 @@ export default function IdeaForm({ idea, isOpen, onClose, onSaved }: IdeaFormPro
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [showPicker, setShowPicker] = useState(false);
+  const [discoveredProjects, setDiscoveredProjects] = useState<DiscoveredProject[]>([]);
+  const [loadingProjects, setLoadingProjects] = useState(false);
 
   const isEditing = Boolean(idea);
 
@@ -235,6 +243,17 @@ export default function IdeaForm({ idea, isOpen, onClose, onSaved }: IdeaFormPro
     setError('');
     setShowPicker(false);
   }, [idea, isOpen]);
+
+  // Fetch discovered projects when creating a new idea
+  useEffect(() => {
+    if (!isOpen || isEditing) return;
+    setLoadingProjects(true);
+    fetch('/api/discover-projects')
+      .then((res) => res.json())
+      .then((data: DiscoveredProject[]) => setDiscoveredProjects(data))
+      .catch(() => setDiscoveredProjects([]))
+      .finally(() => setLoadingProjects(false));
+  }, [isOpen, isEditing]);
 
   if (!isOpen) return null;
 
@@ -306,6 +325,38 @@ export default function IdeaForm({ idea, isOpen, onClose, onSaved }: IdeaFormPro
           </div>
           <div>
             <label className="mb-1 block text-sm text-gray-300">Project Path</label>
+            {/* Discovered projects from Claude Code */}
+            {!isEditing && discoveredProjects.length > 0 && (
+              <div className="mb-2">
+                <p className="mb-1.5 text-xs text-gray-500">Discovered from Claude Code</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {discoveredProjects.map((proj) => (
+                    <button
+                      key={proj.path}
+                      type="button"
+                      onClick={() => {
+                        setProjectPath(proj.path);
+                        setShowPicker(false);
+                      }}
+                      className={`rounded-full border px-2.5 py-1 text-xs transition-colors ${
+                        projectPath === proj.path
+                          ? 'border-indigo-500 bg-indigo-500/20 text-indigo-300'
+                          : 'border-gray-600 bg-gray-900 text-gray-300 hover:border-gray-500 hover:bg-gray-800'
+                      }`}
+                      title={proj.path}
+                    >
+                      {proj.name}
+                      {proj.hasClaudeMd && (
+                        <span className="ml-1 text-green-400" title="Has CLAUDE.md">*</span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+            {!isEditing && loadingProjects && (
+              <p className="mb-2 text-xs text-gray-500">Discovering projects...</p>
+            )}
             <div className="flex gap-2">
               <input
                 type="text"
