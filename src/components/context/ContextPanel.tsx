@@ -11,8 +11,8 @@ type Tab = 'instructions' | 'memory' | 'notes' | 'usage';
 
 const TABS: { key: Tab; label: string }[] = [
   { key: 'instructions', label: 'Instructions' },
-  { key: 'memory', label: '记忆' },
-  { key: 'notes', label: '笔记' },
+  { key: 'memory', label: 'Memory' },
+  { key: 'notes', label: 'Notes' },
   { key: 'usage', label: 'Token' },
 ];
 
