@@ -28,8 +28,8 @@ export function useSessions({ socket, ideaId }: UseSessionsOptions) {
         setSessionId(sid);
         setSessionStatus(detailedStatus || status || 'active');
         setError(null);
-        // Attach to get buffer replay and output
-        socket.emit('session:attach', { sessionId: sid });
+        // Don't emit session:attach here — TerminalView handles attach
+        // when it detects sessionId change, avoiding double buffer replay
       }
     };
 
