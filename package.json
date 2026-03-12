@@ -1,6 +1,6 @@
 {
   "name": "ezvibe",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Claude Code multi-session orchestrator — manage multiple AI coding sessions from one UI",
   "keywords": ["claude", "claude-code", "terminal", "orchestrator", "ai", "coding"],
   "license": "MIT",

@@ -1,13 +1,23 @@
 'use client';
 
 import { useState } from 'react';
+import useSWR from 'swr';
 import { useIdeas } from '@/hooks/useIdeas';
 import IdeaCard from './IdeaCard';
 import StageFilter from '../common/StageFilter';
 
+const fetchActiveSessions = (url: string) =>
+  fetch(url).then(res => res.ok ? res.json() : { ideaIds: [] }).catch(() => ({ ideaIds: [] }));
+
 export default function IdeaList() {
   const [stageFilter, setStageFilter] = useState<string | null>(null);
   const { ideas, isLoading } = useIdeas(stageFilter || undefined);
+  const { data: activeData } = useSWR<{ ideaIds: string[] }>(
+    '/api/sessions/active',
+    fetchActiveSessions,
+    { refreshInterval: 3000 }
+  );
+  const activeIdeaIds = new Set(activeData?.ideaIds || []);
 
   return (
     <div className="flex flex-col gap-0.5">
@@ -29,7 +39,7 @@ export default function IdeaList() {
             <p className="mt-1 text-xs" style={{ color: 'var(--text-tertiary)' }}>Create your first idea to get started</p>
           </div>
         ) : (
-          ideas.map((idea) => <IdeaCard key={idea.id} idea={idea} />)
+          ideas.map((idea) => <IdeaCard key={idea.id} idea={idea} hasActiveSession={activeIdeaIds.has(idea.id)} />)
         )}
       </div>
     </div>

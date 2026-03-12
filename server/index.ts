@@ -57,6 +57,15 @@ app.get('/health', (_req, res) => {
   });
 });
 
+// Active sessions endpoint — returns ideaIds with active sessions
+app.get('/sessions/active', (_req, res) => {
+  const sessions = sessionManager.getAllSessions();
+  const activeIdeaIds = sessions
+    .filter(s => s.status !== 'dead')
+    .map(s => s.ideaId);
+  res.json({ ideaIds: activeIdeaIds });
+});
+
 // Auth token endpoint (only accessible from localhost for Next.js server)
 app.get('/auth-token', (req, res) => {
   // Only allow from localhost

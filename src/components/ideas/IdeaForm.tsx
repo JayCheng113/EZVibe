@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import type { Idea } from '@/lib/types';
+import { STAGES, STAGE_LABELS, STAGE_ICONS } from '@/lib/constants';
+import type { Stage } from '@/lib/constants';
 
 interface FolderEntry {
   name: string;
@@ -222,6 +224,7 @@ export default function IdeaForm({ idea, isOpen, onClose, onSaved }: IdeaFormPro
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [projectPath, setProjectPath] = useState('');
+  const [stage, setStage] = useState<Stage>('exploring');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [showPicker, setShowPicker] = useState(false);
@@ -235,10 +238,12 @@ export default function IdeaForm({ idea, isOpen, onClose, onSaved }: IdeaFormPro
       setName(idea.name);
       setDescription(idea.description || '');
       setProjectPath(idea.projectPath || '');
+      setStage(idea.stage);
     } else {
       setName('');
       setDescription('');
       setProjectPath('');
+      setStage('exploring');
     }
     setError('');
     setShowPicker(false);
@@ -271,6 +276,7 @@ export default function IdeaForm({ idea, isOpen, onClose, onSaved }: IdeaFormPro
       const body: Record<string, string> = { name: name.trim() };
       if (description.trim()) body.description = description.trim();
       if (projectPath.trim()) body.projectPath = projectPath.trim();
+      if (isEditing) body.stage = stage;
 
       const url = isEditing ? `/api/ideas/${idea!.id}` : '/api/ideas';
       const method = isEditing ? 'PATCH' : 'POST';
@@ -332,6 +338,32 @@ export default function IdeaForm({ idea, isOpen, onClose, onSaved }: IdeaFormPro
               placeholder="What is this idea about?"
             />
           </div>
+          {isEditing && (
+            <div>
+              <label className="mb-1 block text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>Stage</label>
+              <div className="flex flex-wrap gap-1.5">
+                {STAGES.map((s) => {
+                  const isActive = stage === s;
+                  return (
+                    <button
+                      key={s}
+                      type="button"
+                      onClick={() => setStage(s)}
+                      className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-all duration-150"
+                      style={{
+                        background: isActive ? 'var(--accent-subtle)' : 'var(--bg-tertiary)',
+                        border: `1px solid ${isActive ? 'var(--accent)' : 'var(--border-default)'}`,
+                        color: isActive ? 'var(--accent)' : 'var(--text-secondary)',
+                      }}
+                    >
+                      <span>{STAGE_ICONS[s]}</span>
+                      {STAGE_LABELS[s]}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
           <div>
             <label className="mb-1 block text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>Project Path</label>
             {/* Discovered projects from Claude Code */}
