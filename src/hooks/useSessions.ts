@@ -20,11 +20,11 @@ export function useSessions({ socket, ideaId }: UseSessionsOptions) {
   useEffect(() => {
     if (!socket || !ideaId) return;
 
-    const onFound = ({ sessionId: sid, status }: { ideaId: string; sessionId: string | null; status?: string; pid?: number }) => {
+    const onFound = ({ sessionId: sid, status, detailedStatus }: { ideaId: string; sessionId: string | null; status?: string; detailedStatus?: string; pid?: number }) => {
       if (sid) {
-        console.log('[useSessions] found existing session', sid, status);
+        console.log('[useSessions] found existing session', sid, status, detailedStatus);
         setSessionId(sid);
-        setSessionStatus(status || 'active');
+        setSessionStatus(detailedStatus || status || 'active');
         setError(null);
         // Attach to get buffer replay and output
         socket.emit('session:attach', { sessionId: sid });

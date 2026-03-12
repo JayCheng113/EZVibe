@@ -9,17 +9,21 @@ const DB_DIR = path.join(os.homedir(), '.ezvibe');
 const DB_PATH = path.join(DB_DIR, 'ezvibe.db');
 const BUFFER_CAP = 100 * 1024; // 100KB
 
+export type DetailedStatus = 'active' | 'waiting' | 'idle' | 'dead';
+
 export interface ManagedSession {
   id: string;
   ideaId: string;
   pty: pty.IPty;
   pid: number;
   status: 'starting' | 'active' | 'dead';
+  detailedStatus: DetailedStatus;
   buffer: string;
   sockets: Set<string>;
   cwd: string;
   startedAt: string;
   lastOutputAt: number;
+  idleCheckInterval?: ReturnType<typeof setInterval>;
 }
 
 type SessionStatus = ManagedSession['status'];
@@ -31,6 +35,7 @@ export class SessionManager {
   // Callback for notifying sockets when a session exits
   onSessionExit?: (sessionId: string, code: number) => void;
   onSessionError?: (sessionId: string, message: string) => void;
+  onStatusChange?: (sessionId: string, status: DetailedStatus) => void;
 
   constructor() {
     if (!fs.existsSync(DB_DIR)) {
@@ -96,6 +101,7 @@ export class SessionManager {
       pty: ptyProcess,
       pid: ptyProcess.pid,
       status: 'starting',
+      detailedStatus: 'active',
       buffer: '',
       sockets: new Set(),
       cwd,
@@ -112,12 +118,44 @@ export class SessionManager {
       if (session.status === 'starting') {
         this.updateStatus(session, 'active');
       }
+
+      // Detect detailed status from output patterns
+      const newDetailed = this.detectDetailedStatus(data);
+      if (newDetailed !== session.detailedStatus) {
+        session.detailedStatus = newDetailed;
+        if (this.onStatusChange) {
+          this.onStatusChange(session.id, newDetailed);
+        }
+      }
     });
+
+    // Periodic idle check every 5 seconds
+    session.idleCheckInterval = setInterval(() => {
+      if (session.status === 'dead') return;
+      if (Date.now() - session.lastOutputAt > 10000 && session.detailedStatus !== 'idle') {
+        session.detailedStatus = 'idle';
+        if (this.onStatusChange) {
+          this.onStatusChange(session.id, 'idle');
+        }
+      }
+    }, 5000);
 
     // Register PTY exit handler
     ptyProcess.onExit(({ exitCode }) => {
       const elapsed = Date.now() - spawnTime;
       this.updateStatus(session, 'dead');
+
+      // Clean up idle check interval
+      if (session.idleCheckInterval) {
+        clearInterval(session.idleCheckInterval);
+        session.idleCheckInterval = undefined;
+      }
+
+      // Update detailed status to dead
+      session.detailedStatus = 'dead';
+      if (this.onStatusChange) {
+        this.onStatusChange(session.id, 'dead');
+      }
 
       // Early exit detection
       if (elapsed < 3000 && this.onSessionError) {
@@ -177,6 +215,10 @@ export class SessionManager {
           // Already dead
         }
         this.updateStatus(session, 'dead');
+        if (session.idleCheckInterval) {
+          clearInterval(session.idleCheckInterval);
+          session.idleCheckInterval = undefined;
+        }
       }
     }, 2000);
   }
@@ -237,6 +279,11 @@ export class SessionManager {
         }
 
         session.status = 'dead';
+        session.detailedStatus = 'dead';
+        if (session.idleCheckInterval) {
+          clearInterval(session.idleCheckInterval);
+          session.idleCheckInterval = undefined;
+        }
         try {
           this.db.prepare(
             `UPDATE sessions SET status = 'dead', ended_at = ? WHERE id = ?`
@@ -263,6 +310,18 @@ export class SessionManager {
       if (session.status !== 'dead') count++;
     }
     return count;
+  }
+
+  // Regex to detect prompt-like patterns at the end of output
+  private static PROMPT_PATTERN = /(?:❯|>\s*$|\$\s*$|⏎|claude\s*>)/m;
+
+  private detectDetailedStatus(data: string): DetailedStatus {
+    // Check the last portion of output for prompt patterns
+    const tail = data.slice(-200);
+    if (SessionManager.PROMPT_PATTERN.test(tail)) {
+      return 'waiting';
+    }
+    return 'active';
   }
 
   private appendToBuffer(session: ManagedSession, data: string): void {
