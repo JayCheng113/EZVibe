@@ -1,0 +1,93 @@
+import { Server, Socket } from 'socket.io';
+import { SessionManager } from './session-manager';
+
+export function registerSocketHandlers(io: Server, sessionManager: SessionManager): void {
+  // Wire up session-level event callbacks
+  sessionManager.onSessionExit = (sessionId: string, code: number) => {
+    io.to(`session:${sessionId}`).emit('session:exit', { sessionId, code });
+  };
+
+  sessionManager.onSessionError = (sessionId: string, message: string) => {
+    io.to(`session:${sessionId}`).emit('session:error', { sessionId, message });
+  };
+
+  io.on('connection', (socket: Socket) => {
+    console.log(`Client connected: ${socket.id}`);
+
+    // session:create — spawn new PTY
+    socket.on('session:create', ({ ideaId, cwd }: { ideaId: string; cwd: string }) => {
+      try {
+        const session = sessionManager.createSession(ideaId, cwd);
+
+        // Join room for this session
+        socket.join(`session:${session.id}`);
+        sessionManager.addSocket(session.id, socket.id);
+
+        // Pipe PTY output to this session's room
+        session.pty.onData((data: string) => {
+          io.to(`session:${session.id}`).emit('terminal:output', { sessionId: session.id, data });
+        });
+
+        // Notify session created
+        socket.emit('session:created', {
+          sessionId: session.id,
+          ideaId,
+          pid: session.pid,
+        });
+      } catch (err: any) {
+        socket.emit('session:error', { message: err.message });
+      }
+    });
+
+    // session:attach — attach to existing session
+    socket.on('session:attach', ({ sessionId }: { sessionId: string }) => {
+      const session = sessionManager.getSession(sessionId);
+      if (!session) {
+        socket.emit('session:error', { sessionId, message: 'Session not found' });
+        return;
+      }
+
+      socket.join(`session:${sessionId}`);
+      sessionManager.addSocket(sessionId, socket.id);
+
+      // Send buffer for replay
+      const buffer = sessionManager.getBuffer(sessionId);
+      if (buffer) {
+        socket.emit('terminal:output', { sessionId, data: buffer });
+      }
+
+      socket.emit('session:status', { sessionId, status: session.status });
+    });
+
+    // session:detach — leave session room without killing
+    socket.on('session:detach', ({ sessionId }: { sessionId: string }) => {
+      socket.leave(`session:${sessionId}`);
+      sessionManager.removeSocket(sessionId, socket.id);
+    });
+
+    // terminal:input — keyboard input
+    socket.on('terminal:input', ({ sessionId, data }: { sessionId: string; data: string }) => {
+      sessionManager.writeToSession(sessionId, data);
+    });
+
+    // terminal:resize
+    socket.on('terminal:resize', ({ sessionId, cols, rows }: { sessionId: string; cols: number; rows: number }) => {
+      sessionManager.resizeSession(sessionId, cols, rows);
+    });
+
+    // session:kill
+    socket.on('session:kill', ({ sessionId }: { sessionId: string }) => {
+      sessionManager.killSession(sessionId);
+      io.to(`session:${sessionId}`).emit('session:exit', { sessionId, code: -1 });
+    });
+
+    // disconnect
+    socket.on('disconnect', () => {
+      console.log(`Client disconnected: ${socket.id}`);
+      // Remove socket from all sessions it was part of
+      for (const session of sessionManager.getAllSessions()) {
+        sessionManager.removeSocket(session.id, socket.id);
+      }
+    });
+  });
+}
