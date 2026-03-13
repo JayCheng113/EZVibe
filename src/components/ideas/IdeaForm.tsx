@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import type { Idea } from '@/lib/types';
 import { STAGES, STAGE_LABELS, STAGE_ICONS } from '@/lib/constants';
 import type { Stage } from '@/lib/constants';
@@ -29,13 +29,18 @@ interface IdeaFormProps {
   onSaved: () => void;
 }
 
-function FolderPicker({ onSelect, onCancel, onPathChange }: { onSelect: (path: string) => void; onCancel: () => void; onPathChange?: (path: string) => void }) {
+function FolderPicker({ initialPath, onSelect, onCancel, onPathChange }: { initialPath?: string; onSelect: (path: string) => void; onCancel: () => void; onPathChange?: (path: string) => void }) {
   const [browsePath, setBrowsePath] = useState('');
   const [data, setData] = useState<BrowseResult | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [newFolderName, setNewFolderName] = useState('');
   const [creatingFolder, setCreatingFolder] = useState(false);
+
+  const onPathChangeRef = useRef(onPathChange);
+  useEffect(() => {
+    onPathChangeRef.current = onPathChange;
+  }, [onPathChange]);
 
   const fetchDir = useCallback(async (dir?: string) => {
     setLoading(true);
@@ -50,16 +55,17 @@ function FolderPicker({ onSelect, onCancel, onPathChange }: { onSelect: (path: s
       const result: BrowseResult = await res.json();
       setData(result);
       setBrowsePath(result.current);
-      onPathChange?.(result.current);
+      onPathChangeRef.current?.(result.current);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error');
     } finally {
       setLoading(false);
     }
-  }, [onPathChange]);
+  }, []);
 
+  const initialPathRef = useRef(initialPath);
   useEffect(() => {
-    fetchDir();
+    fetchDir(initialPathRef.current);
   }, [fetchDir]);
 
   const handleNavigate = (path: string) => {
@@ -418,6 +424,7 @@ export default function IdeaForm({ idea, isOpen, onClose, onSaved }: IdeaFormPro
             {showPicker && (
               <div className="mt-2">
                 <FolderPicker
+                  initialPath={projectPath}
                   onSelect={(path) => {
                     setProjectPath(path);
                     setShowPicker(false);
