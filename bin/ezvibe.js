@@ -64,7 +64,7 @@ const buildId = path.join(ROOT, '.next', 'BUILD_ID');
 if (!fs.existsSync(buildId)) {
   console.log(dim('  Building Next.js (first run only)...'));
   try {
-    execSync('npx next build', { cwd: ROOT, stdio: 'inherit' });
+    execSync(`"${path.join(ROOT, 'node_modules', '.bin', 'next')}" build`, { cwd: ROOT, stdio: 'inherit' });
   } catch {
     console.error('\n  Build failed. Please check errors above.');
     process.exit(1);

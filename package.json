@@ -1,6 +1,6 @@
 {
   "name": "ezvibe",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Claude Code multi-session orchestrator — manage multiple AI coding sessions from one UI",
   "keywords": ["claude", "claude-code", "terminal", "orchestrator", "ai", "coding"],
   "license": "MIT",
@@ -25,8 +25,7 @@
   "scripts": {
     "dev": "concurrently \"next dev\" \"tsx watch server/index.ts\"",
     "build": "next build",
-    "start": "node bin/ezvibe.js",
-    "postinstall": "npx next build || true"
+    "start": "node bin/ezvibe.js"
   },
   "dependencies": {
     "@xterm/addon-fit": "^0.10.0",
