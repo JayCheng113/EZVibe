@@ -1,7 +1,7 @@
-import type { NextConfig } from 'next';
 import path from 'path';
 
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   serverExternalPackages: ['better-sqlite3'],
   webpack: (config, { dir }) => {
     config.resolve.alias['@'] = path.join(dir, 'src');
