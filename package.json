@@ -1,6 +1,6 @@
 {
   "name": "ezvibe",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Claude Code multi-session orchestrator — manage multiple AI coding sessions from one UI",
   "keywords": ["claude", "claude-code", "terminal", "orchestrator", "ai", "coding"],
   "license": "MIT",
@@ -9,17 +9,17 @@
     "url": "https://github.com/JayCheng113/EZVibe.git"
   },
   "bin": {
-    "ezvibe": "./bin/ezvibe.js"
+    "ezvibe": "bin/ezvibe.js"
   },
   "files": [
     "bin/",
     "server/",
     "src/",
     "public/",
-    "next.config.js",
+    "next.config.ts",
     "tsconfig.json",
     "tailwind.config.ts",
-    "postcss.config.js",
+    "postcss.config.mjs",
     "package.json"
   ],
   "scripts": {
