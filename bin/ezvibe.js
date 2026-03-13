@@ -59,12 +59,15 @@ if (!checkClaude()) {
   console.log(`  ${green('✓')} Claude Code detected\n`);
 }
 
+// Resolve next CLI path via require.resolve (works reliably in npx)
+const nextCli = require.resolve('next/dist/bin/next');
+
 // Check if Next.js is built (BUILD_ID only exists after successful build)
 const buildId = path.join(ROOT, '.next', 'BUILD_ID');
 if (!fs.existsSync(buildId)) {
   console.log(dim('  Building Next.js (first run only)...'));
   try {
-    execSync(`"${path.join(ROOT, 'node_modules', '.bin', 'next')}" build`, { cwd: ROOT, stdio: 'inherit' });
+    execSync(`"${process.execPath}" "${nextCli}" build`, { cwd: ROOT, stdio: 'inherit' });
   } catch {
     console.error('\n  Build failed. Please check errors above.');
     process.exit(1);
@@ -85,8 +88,8 @@ const pty = spawn(
 
 // Start Next.js production server
 const next = spawn(
-  'npx',
-  ['next', 'start', '-p', port],
+  process.execPath,
+  [nextCli, 'start', '-p', port],
   {
     cwd: ROOT,
     env: { ...process.env, NEXT_PUBLIC_PTY_PORT: ptyPort },
