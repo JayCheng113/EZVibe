@@ -1,6 +1,6 @@
 {
   "name": "ezvibe",
-  "version": "0.2.9",
+  "version": "0.3.0",
   "engines": {
     "node": ">=18 <25"
   },
@@ -19,6 +19,9 @@
     "server/",
     "src/",
     "public/",
+    ".next/",
+    "!.next/cache",
+    "!.next/trace",
     "next.config.mjs",
     "tsconfig.json",
     "tailwind.config.js",
@@ -28,6 +31,7 @@
   "scripts": {
     "dev": "concurrently \"next dev\" \"tsx watch server/index.ts\"",
     "build": "next build",
+    "prepublishOnly": "next build",
     "start": "node bin/ezvibe.js"
   },
   "dependencies": {
