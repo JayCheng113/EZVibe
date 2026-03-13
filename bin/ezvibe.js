@@ -21,6 +21,44 @@ ${cyan('  ║')}  Claude Code Orchestrator  ${cyan('║')}
 ${cyan('  ╚═══════════════════════════╝')}
 `);
 
+// Check if Claude Code is installed
+function checkClaude() {
+  const homedir = require('os').homedir();
+  const candidates = [
+    path.join(homedir, '.npm-global', 'bin', 'claude'),
+    path.join(homedir, '.local', 'bin', 'claude'),
+    '/usr/local/bin/claude',
+  ];
+
+  // Check PATH first
+  try {
+    execSync('which claude', { stdio: 'ignore' });
+    return true;
+  } catch {}
+
+  // Check common locations
+  for (const p of candidates) {
+    if (fs.existsSync(p)) return true;
+  }
+
+  return false;
+}
+
+if (!checkClaude()) {
+  console.log(`  ${cyan('Claude Code not found.')}`);
+  console.log(`  Installing Claude Code via npm...\n`);
+  try {
+    execSync('npm install -g @anthropic-ai/claude-code', { cwd: ROOT, stdio: 'inherit' });
+    console.log(green('\n  Claude Code installed successfully.\n'));
+  } catch {
+    console.error('\n  Failed to install Claude Code automatically.');
+    console.error('  Please install it manually: npm install -g @anthropic-ai/claude-code\n');
+    process.exit(1);
+  }
+} else {
+  console.log(`  ${green('✓')} Claude Code detected\n`);
+}
+
 // Check if Next.js is built (BUILD_ID only exists after successful build)
 const buildId = path.join(ROOT, '.next', 'BUILD_ID');
 if (!fs.existsSync(buildId)) {
