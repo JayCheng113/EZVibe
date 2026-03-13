@@ -47,6 +47,8 @@ You're running 3 Claude Code sessions across different projects. Terminal A is i
 | Context | Scattered across files | None | **Plans + Memory + Notes panel** |
 | `~/.claude/` data | N/A | Not read | **Deep integration** |
 
+> **Want a lighter option?** Check out [EZVibe Light](https://github.com/JayCheng113/EZVibe-Light) — a 37 KB terminal TUI with the same idea tracking and Claude integration, zero native deps, works over SSH.
+
 ---
 
 ## Quick Start
